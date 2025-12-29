@@ -3,7 +3,12 @@ package com.digitar.gamorax
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.view.Gravity
+import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
@@ -12,15 +17,36 @@ import com.google.android.material.carousel.CarouselLayoutManager
 import com.google.android.material.carousel.CarouselSnapHelper
 import com.google.android.material.carousel.HeroCarouselStrategy
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.navigation.NavigationView
 
 class MainActivity : AppCompatActivity() {
     private lateinit var adView: AdView
+    private lateinit var drawerLayout: DrawerLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
+
+        drawerLayout = findViewById(R.id.drawerLayout)
+        val navigationView = findViewById<NavigationView>(R.id.navigationView)
+        val menuButton = findViewById<ImageView>(R.id.menuButton)
+
+        menuButton.setOnClickListener {
+            drawerLayout.openDrawer(GravityCompat.START)
+        }
+
+        navigationView.setNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.nav_profile -> Toast.makeText(this, "Profile clicked", Toast.LENGTH_SHORT).show()
+                R.id.nav_wallet -> Toast.makeText(this, "Wallet clicked", Toast.LENGTH_SHORT).show()
+                R.id.nav_settings -> Toast.makeText(this, "Settings clicked", Toast.LENGTH_SHORT).show()
+                R.id.nav_logout -> finish()
+            }
+            drawerLayout.closeDrawer(GravityCompat.START)
+            true
+        }
 
         setupCarousel()
         setupClickListeners()
@@ -58,7 +84,20 @@ class MainActivity : AppCompatActivity() {
         findViewById<MaterialCardView>(R.id.card2).setOnClickListener {
             openGame("https://antila.github.io/ludum-dare-28/")
         }
-        // ... set other card listeners as needed
+        
+        // Setup Bottom Nav clicks if needed
+        findViewById<android.view.View>(R.id.nav_home).setOnClickListener {
+            Toast.makeText(this, "Home selected", Toast.LENGTH_SHORT).show()
+        }
+        findViewById<android.view.View>(R.id.nav_fav).setOnClickListener {
+            Toast.makeText(this, "Favorites clicked", Toast.LENGTH_SHORT).show()
+        }
+        findViewById<android.view.View>(R.id.nav_tourney).setOnClickListener {
+            Toast.makeText(this, "Tourney clicked", Toast.LENGTH_SHORT).show()
+        }
+        findViewById<android.view.View>(R.id.nav_arcade).setOnClickListener {
+            Toast.makeText(this, "Arcade clicked", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun openGame(url: String) {
@@ -87,5 +126,13 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         if (::adView.isInitialized) adView.destroy()
         super.onDestroy()
+    }
+
+    override fun onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START)
+        } else {
+            super.onBackPressed()
+        }
     }
 }

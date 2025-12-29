@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Premium Gaming Theme Palette -->
-    <color name="bg_main">#0B0B15</color>
-    <color name="bg_card">#1A1A2E</color>
-    <color name="neon_purple">#BC13FE</color>
-    <color name="neon_cyan">#00F5FF</color>
-    <color name="neon_purple_dark">#7B1FA2</color>
-    <color name="neon_cyan_dark">#0097A7</color>
+    <!-- Premium Gaming Theme Palette (Redesigned) -->
+    <color name="bg_main">#121212</color>
+    <color name="bg_card">#1E1E1E</color>
+    <color name="bg_search">#2A2A2A</color>
+    <color name="accent_orange">#FF9800</color>
+    <color name="accent_gold">#FFD700</color>
+    
     <color name="text_primary">#FFFFFF</color>
-    <color name="text_secondary">#B0B0C3</color>
+    <color name="text_secondary">#9E9E9E</color>
     <color name="glass_white">#1AFFFFFF</color>
     <color name="glass_stroke">#33FFFFFF</color>
     
-    <!-- Existing Colors (Preserved) -->
+    <!-- Neon Colors (Preserved for compatibility) -->
+    <color name="neon_purple">#BC13FE</color>
+    <color name="neon_cyan">#00F5FF</color>
+    
+    <!-- Existing Colors -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="purple_200">#FFBB86FC</color>

@@ -4,12 +4,12 @@
     android:layout_height="wrap_content"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="8dp">
+    android:padding="4dp">
 
     <ImageView
         android:id="@+id/game_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="100dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:scaleType="centerInside"
         android:src="@drawable/tower_crash" />
 
@@ -17,13 +17,12 @@
         android:id="@+id/game_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:fontFamily="sans-serif-medium"
-        android:text="Game"
-        android:textColor="@color/text_primary"
-        android:textSize="10sp"
-        android:maxLines="1"
+        android:layout_marginTop="2dp"
         android:ellipsize="end"
-        android:textStyle="bold" />
+        android:fontFamily="sans-serif-medium"
+        android:maxLines="1"
+        android:text="Game"
+        android:textColor="@color/white"
+        android:textSize="8sp" />
 
 </LinearLayout>
