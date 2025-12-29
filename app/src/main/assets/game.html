@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HTML5 Game</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #000;
+            touch-action: none;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        #gameCanvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+        #score {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            color: white;
+            font-family: Arial, sans-serif;
+            font-size: 24px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <div id="score">Score: 0</div>
+    <canvas id="gameCanvas"></canvas>
+
+    <script>
+        // Game variables
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        let score = 0;
+        let gameRunning = true;
+        let animationId;
+        
+        // Set canvas size
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight - 50; // Leave space for ad banner
+        }
+        
+        // Initialize game
+        function init() {
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            
+            // Set up game loop
+            gameLoop();
+            
+            // Set up touch/click events
+            canvas.addEventListener('click', handleClick);
+            canvas.addEventListener('touchstart', handleTouch, { passive: false });
+            
+            // Notify Android that game is ready
+            if (window.Android) {
+                Android.showToast("Game loaded! Tap to score points!");
+            }
+        }
+        
+        // Game objects
+        const player = {
+            x: 50,
+            y: 50,
+            size: 30,
+            color: '#3498db',
+            speed: 5,
+            targetX: 50,
+            targetY: 50,
+            update: function() {
+                // Move towards target
+                const dx = this.targetX - this.x;
+                const dy = this.targetY - this.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance > 1) {
+                    this.x += (dx / distance) * this.speed;
+                    this.y += (dy / distance) * this.speed;
+                }
+            },
+            draw: function() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Draw a smaller circle inside
+                ctx.fillStyle = '#fff';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size * 0.6, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        };
+        
+        // Target object
+        const target = {
+            x: 100,
+            y: 100,
+            size: 20,
+            color: '#e74c3c',
+            move: function() {
+                this.x = 50 + Math.random() * (canvas.width - 100);
+                this.y = 50 + Math.random() * (canvas.height - 100);
+            },
+            draw: function() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Draw a cross inside
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(this.x - this.size/2, this.y - this.size/2);
+                ctx.lineTo(this.x + this.size/2, this.y + this.size/2);
+                ctx.moveTo(this.x + this.size/2, this.y - this.size/2);
+                ctx.lineTo(this.x - this.size/2, this.y + this.size/2);
+                ctx.stroke();
+            }
+        };
+        
+        // Handle click/tap
+        function handleClick(e) {
+            if (!gameRunning) {
+                resetGame();
+                return;
+            }
+            
+            const rect = canvas.getBoundingClientRect();
+            player.targetX = e.clientX - rect.left;
+            player.targetY = e.clientY - rect.top;
+        }
+        
+        function handleTouch(e) {
+            e.preventDefault();
+            if (!gameRunning) {
+                resetGame();
+                return;
+            }
+            
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            player.targetX = touch.clientX - rect.left;
+            player.targetY = touch.clientY - rect.top;
+        }
+        
+        // Check collision between player and target
+        function checkCollision() {
+            const dx = player.x - target.x;
+            const dy = player.y - target.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance < player.size + target.size) {
+                // Collision detected
+                score += 10;
+                document.getElementById('score').textContent = `Score: ${score}`;
+                target.move();
+                
+                // Increase difficulty
+                player.speed += 0.2;
+                
+                // Update score in Android
+                if (window.Android) {
+                    Android.updateScore(score);
+                }
+            }
+        }
+        
+        // Game over
+        function gameOver() {
+            gameRunning = false;
+            cancelAnimationFrame(animationId);
+            
+            // Show game over text
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = '#fff';
+            ctx.font = '48px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Game Over!', canvas.width / 2, canvas.height / 2);
+            
+            ctx.font = '24px Arial';
+            ctx.fillText(`Final Score: ${score}`, canvas.width / 2, canvas.height / 2 + 40);
+            ctx.fillText('Tap to play again', canvas.width / 2, canvas.height / 2 + 80);
+            
+            // Notify Android that game is over
+            if (window.Android) {
+                Android.gameOver(score);
+            }
+        }
+        
+        // Reset game
+        function resetGame() {
+            score = 0;
+            player.x = 50;
+            player.y = 50;
+            player.targetX = 50;
+            player.targetY = 50;
+            player.speed = 5;
+            target.move();
+            gameRunning = true;
+            document.getElementById('score').textContent = 'Score: 0';
+            gameLoop();
+        }
+        
+        // Main game loop
+        function gameLoop() {
+            if (!gameRunning) return;
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Update and draw game objects
+            player.update();
+            player.draw();
+            target.draw();
+            
+            // Check for collisions
+            checkCollision();
+            
+            // Continue the game loop
+            animationId = requestAnimationFrame(gameLoop);
+        }
+        
+        // Start the game when the page loads
+        window.onload = init;
+        
+        // Handle app pause/resume
+        window.onAppPause = function() {
+            // Pause the game when app is in background
+            cancelAnimationFrame(animationId);
+        };
+        
+        window.onAppResume = function() {
+            // Resume the game when app comes to foreground
+            if (gameRunning) {
+                gameLoop();
+            }
+        };
+        
+        // Android interface
+        // These functions are called from Android
+        window.AndroidInterface = {
+            restartGame: function() {
+                resetGame();
+            },
+            pauseGame: function() {
+                if (gameRunning) {
+                    cancelAnimationFrame(animationId);
+                }
+            },
+            resumeGame: function() {
+                if (gameRunning) {
+                    gameLoop();
+                }
+            }
+        };
+    </script>
+</body>
+</html>
