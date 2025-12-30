@@ -6,9 +6,7 @@ plugins {
 
 android {
     namespace = "com.digitar.gamorax"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.digitar.gamorax"
@@ -45,9 +43,9 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.firebase.database)
+    implementation(libs.gson)
+    
     testImplementation(libs.junit)
-
-    implementation(libs.material)
 
     implementation("com.google.android.gms:play-services-ads:24.9.0")
     androidTestImplementation(libs.androidx.junit)

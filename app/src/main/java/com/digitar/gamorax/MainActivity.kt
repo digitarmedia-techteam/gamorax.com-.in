@@ -20,6 +20,8 @@ import com.google.android.material.navigation.NavigationView
 class MainActivity : AppCompatActivity() {
     private lateinit var adView: AdView
     private lateinit var drawerLayout: DrawerLayout
+    private lateinit var categoryAdapter: CategoryAdapter
+    private var allGamesList = listOf<GameModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +32,21 @@ class MainActivity : AppCompatActivity() {
         initDrawer()
         setupCarousel()
         setupCategories()
+        
+        // Setup notification button
+        findViewById<ImageView>(R.id.notificationButton).setOnClickListener {
+            val intent = Intent(this, notification::class.java)
+            startActivity(intent)
+        }
+
+        // Setup Bottom Nav click for Favorites
+        findViewById<android.view.View>(R.id.nav_fav).setOnClickListener {
+            showFavorites()
+        }
+
+        findViewById<android.view.View>(R.id.nav_home).setOnClickListener {
+            setupCategories() // Show all again
+        }
 
         MobileAds.initialize(this) {
             loadBannerAd()
@@ -60,44 +77,52 @@ class MainActivity : AppCompatActivity() {
         CarouselSnapHelper().attachToRecyclerView(recyclerView)
 
         val items = listOf(
-            CarouselItem("TOWER CRASH", R.drawable.tower_crash, "https://appslabs.store/games/tower-crash-3d/A1000-10.html"),
+            CarouselItem("TOWER CRASH", R.drawable.tower_crash, "https://play.famobi.com/wrapper/tower-crash-3d/A1000-10"),
             CarouselItem("LUDUM DARE", R.drawable.ludum_dare, "https://antila.github.io/ludum-dare-28/"),
-            CarouselItem("ZOO BOOM", R.drawable.zoo_boom, "https://appslabs.store/games/zoo-boom/A1000-10.html")
+            CarouselItem("ZOO BOOM", R.drawable.zoo_boom, "https://appslabs.store/games/zoo-boom/wrapper/zoo-boom/A1000-10.html")
         )
 
         recyclerView.adapter = CarouselAdapter(items) { url -> openGame(url) }
     }
 
     private fun setupCategories() {
-        // Data models (This part is ready for API integration)
-        val gamesList = listOf(
-            GameModel("Tower Crash", R.drawable.tower_crash, "https://appslabs.store/games/tower-crash-3d/A1000-10.html"),
+        allGamesList = listOf(
+            GameModel("Tower Crash", R.drawable.tower_crash, "https://play.famobi.com/wrapper/tower-crash-3d/A1000-10"),
             GameModel("Ludum Dare", R.drawable.ludum_dare, "https://antila.github.io/ludum-dare-28/"),
-            GameModel("Zoo Boom", R.drawable.zoo_boom, "https://appslabs.store/games/zoo-boom/A1000-10.html"),
-            GameModel("Sudoku", R.drawable.sudoku, "https://appslabs.store/games/sudoku/A1000-10.html"),
-            GameModel("Words", R.drawable.words_of_wonders, "https://appslabs.store/games/wow/A1000-10.html")
+            GameModel("Zoo Boom", R.drawable.zoo_boom, "https://appslabs.store/games/zoo-boom/wrapper/zoo-boom/A1000-10.html"),
+            GameModel("Sudoku", R.drawable.sudoku, "https://appslabs.store/games/sudoku/"),
+            GameModel("Words", R.drawable.words_of_wonders, "http://appslabs.store/games/words-of-wonders/"),
+            GameModel("Quiz Master", R.drawable.quiz, "https://appslabs.store/games/click-combo-quiz")
         )
 
-        val impList = emptyList<GameModel>()
-
-        // Create categories list (This will come from API later)
         val allCategories = listOf(
-            CategoryModel("Quick Play", gamesList.reversed()),
-            CategoryModel("Puzzle & Brain Games", gamesList.shuffled()),
-            CategoryModel("Educational Games", gamesList.reversed()),
-            CategoryModel("Action Games", gamesList.shuffled()),
-            CategoryModel("Casino Games", gamesList.reversed()),
-            CategoryModel("Empty Category", impList), // Testing empty category
+            CategoryModel("Quick Play", allGamesList.shuffled()),
+            CategoryModel("Puzzle & Brain Games", allGamesList.shuffled()),
+            CategoryModel("Action Games", allGamesList.shuffled())
         )
 
-        // Filter out categories that have no games
         val filteredCategories = allCategories.filter { it.games.isNotEmpty() }
-
-        // Initialize the main dynamic RecyclerView
         val rvMainCategories = findViewById<RecyclerView>(R.id.rvMainCategories)
-        rvMainCategories.adapter = CategoryAdapter(filteredCategories) { url ->
-            openGame(url)
+        categoryAdapter = CategoryAdapter(filteredCategories) { url -> openGame(url) }
+        rvMainCategories.adapter = categoryAdapter
+    }
+
+    private fun showFavorites() {
+        val favGames = FavoritesManager.getFavorites(this)
+        if (favGames.isEmpty()) {
+            Toast.makeText(this, "No favorites added yet!", Toast.LENGTH_SHORT).show()
+            return
         }
+
+        // Group favorites (In a real API, games would have category tags. 
+        // For now, we put all favorites in a "My Favorites" category)
+        val favCategories = listOf(
+            CategoryModel("My Favorites ❤️", favGames)
+        )
+
+        val rvMainCategories = findViewById<RecyclerView>(R.id.rvMainCategories)
+        categoryAdapter = CategoryAdapter(favCategories) { url -> openGame(url) }
+        rvMainCategories.adapter = categoryAdapter
     }
 
     private fun openGame(url: String) {
@@ -111,6 +136,14 @@ class MainActivity : AppCompatActivity() {
         adView = findViewById(R.id.adView)
         val adRequest = AdRequest.Builder().build()
         adView.loadAd(adRequest)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Refresh UI to show updated favorites status if we returned from another screen
+        if (::categoryAdapter.isInitialized) {
+            categoryAdapter.notifyDataSetChanged()
+        }
     }
 
     override fun onBackPressed() {

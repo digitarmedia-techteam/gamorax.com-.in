@@ -33,5 +33,3 @@ class CategoryAdapter(
 
     override fun getItemCount() = categories.size
 }
-
-data class CategoryModel(val title: String, val games: List<GameModel>)

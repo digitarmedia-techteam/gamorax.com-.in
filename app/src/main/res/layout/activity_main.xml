@@ -164,8 +164,8 @@
 
             <LinearLayout android:id="@+id/nav_home" style="@style/NavButton"><ImageView style="@style/NavIcon" android:src="@drawable/ic_home" app:tint="@color/accent_orange" /><TextView style="@style/NavText" android:text="Home" android:textColor="@color/accent_orange" /></LinearLayout>
             <LinearLayout android:id="@+id/nav_fav" style="@style/NavButton"><ImageView style="@style/NavIcon" android:src="@drawable/ic_favorite" /><TextView style="@style/NavText" android:text="Favorite" /></LinearLayout>
-            <LinearLayout android:id="@+id/nav_tourney" style="@style/NavButton"><ImageView style="@style/NavIcon" android:src="@drawable/ic_tourney" /><TextView style="@style/NavText" android:text="Tourney" /></LinearLayout>
-            <LinearLayout android:id="@+id/nav_arcade" style="@style/NavButton"><ImageView style="@style/NavIcon" android:src="@drawable/ic_arcade" /><TextView style="@style/NavText" android:text="Arcade" /></LinearLayout>
+<!--            <LinearLayout android:id="@+id/nav_tourney" style="@style/NavButton"><ImageView style="@style/NavIcon" android:src="@drawable/ic_tourney" /><TextView style="@style/NavText" android:text="Tourney" /></LinearLayout>-->
+            <LinearLayout android:id="@+id/nav_arcade" style="@style/NavButton"><ImageView style="@style/NavIcon" android:src="@drawable/share" /><TextView style="@style/NavText" android:text="Shere" /></LinearLayout>
 
             <androidx.constraintlayout.helper.widget.Flow
                 android:layout_width="match_parent"

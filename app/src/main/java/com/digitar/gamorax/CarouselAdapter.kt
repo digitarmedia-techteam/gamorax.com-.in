@@ -32,5 +32,3 @@ class CarouselAdapter(
 
     override fun getItemCount() = items.size
 }
-
-data class CarouselItem(val title: String, val imageRes: Int, val url: String)
