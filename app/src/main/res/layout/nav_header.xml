@@ -11,13 +11,13 @@
     <ImageView
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:src="@drawable/ic_launcher_foreground" />
+        android:src="@drawable/digitarmedia_logo" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="John Doe"
+        android:text="Digitar Media"
         android:textColor="@color/white"
         android:textSize="18sp"
         android:textStyle="bold" />
@@ -25,7 +25,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="john.doe@gamorax.com"
+        android:text="digitarmedia@gamorax.com"
         android:textColor="@color/text_secondary" />
 
 </LinearLayout>

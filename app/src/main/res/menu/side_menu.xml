@@ -7,7 +7,7 @@
             android:title="Profile" />
         <item
             android:id="@+id/nav_wallet"
-            android:icon="@drawable/ic_coin"
+            android:icon="@drawable/wallet"
             android:title="Wallet" />
         <item
             android:id="@+id/nav_settings"

@@ -1,7 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.Gamorax" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/accent_orange</item>
         <item name="colorSecondary">@color/accent_gold</item>
         <item name="android:statusBarColor">@color/bg_main</item>
@@ -10,7 +9,53 @@
 
     <style name="Theme.Gamorax" parent="Base.Theme.Gamorax" />
 
-    <!-- Game Card Style for the dense grid -->
+    <!-- Unified Styles for API-Ready Design -->
+    <style name="CategoryTitle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">16dp</item>
+        <item name="android:layout_marginTop">20dp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">18sp</item>
+        <item name="layout_constraintStart_toStartOf">parent</item>
+    </style>
+
+    <style name="CategoryRecyclerView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">12dp</item>
+        <item name="android:clipToPadding">false</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="layoutManager">androidx.recyclerview.widget.LinearLayoutManager</item>
+    </style>
+
+    <style name="NavButton">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+    </style>
+
+    <style name="NavIcon">
+        <item name="android:layout_width">24dp</item>
+        <item name="android:layout_height">24dp</item>
+        <item name="android:tint">@color/text_secondary</item>
+    </style>
+
+    <style name="NavText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:textSize">10sp</item>
+    </style>
+
     <style name="GameCardStyleSmall">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
@@ -21,7 +66,7 @@
         <item name="android:focusable">true</item>
     </style>
 
-    <!-- Premium Game Card Style -->
+    <!-- Restoring PremiumGameCard for backward compatibility with old layouts -->
     <style name="PremiumGameCard">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
@@ -34,7 +79,6 @@
         <item name="rippleColor">@color/glass_white</item>
     </style>
 
-    <!-- Fullscreen theme -->
     <style name="FullscreenTheme" parent="Theme.Gamorax">
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowContentOverlay">@null</item>
@@ -45,7 +89,6 @@
         <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
-    <!-- Transparent theme for the splash screen -->
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@color/bg_main</item>
         <item name="android:windowFullscreen">true</item>
