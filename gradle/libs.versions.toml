@@ -12,6 +12,7 @@ constraintlayout = "2.2.1"
 googleGmsGoogleServices = "4.4.4"
 firebaseDatabase = "22.0.1"
 gson = "2.12.1"
+imageCarousel = "2.1.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -24,6 +25,7 @@ androidx-activity = { group = "androidx.activity", name = "activity", version.re
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 firebase-database = { group = "com.google.firebase", name = "firebase-database", version.ref = "firebaseDatabase" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+imagecarousel = { group = "org.imaginativeworld.whynotimagecarousel", name = "whynotimagecarousel", version.ref = "imageCarousel" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

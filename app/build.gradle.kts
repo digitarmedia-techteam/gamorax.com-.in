@@ -44,6 +44,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.firebase.database)
     implementation(libs.gson)
+    implementation(libs.imagecarousel)
     
     testImplementation(libs.junit)
 

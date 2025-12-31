@@ -1,27 +1,38 @@
 package com.digitar.gamorax
 
+import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.graphics.Rect
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.MotionEvent
+import android.view.View
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
-import com.google.android.material.carousel.CarouselLayoutManager
-import com.google.android.material.carousel.CarouselSnapHelper
-import com.google.android.material.carousel.HeroCarouselStrategy
 import com.google.android.material.navigation.NavigationView
+import org.imaginativeworld.whynotimagecarousel.ImageCarousel
+import org.imaginativeworld.whynotimagecarousel.listener.CarouselListener
+import org.imaginativeworld.whynotimagecarousel.model.CarouselItem
 
 class MainActivity : AppCompatActivity() {
     private lateinit var adView: AdView
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var categoryAdapter: CategoryAdapter
     private var allGamesList = listOf<GameModel>()
+    private var categorizedData = listOf<CategoryModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +42,9 @@ class MainActivity : AppCompatActivity() {
 
         initDrawer()
         setupCarousel()
-        setupCategories()
+        prepareData()
+        setupSearch()
+        setupFooter()
         
         // Setup notification button
         findViewById<ImageView>(R.id.notificationButton).setOnClickListener {
@@ -39,18 +52,76 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        // Setup Bottom Nav click for Favorites
-        findViewById<android.view.View>(R.id.nav_fav).setOnClickListener {
-            showFavorites()
-        }
-
-        findViewById<android.view.View>(R.id.nav_home).setOnClickListener {
-            setupCategories() // Show all again
-        }
-
         MobileAds.initialize(this) {
             loadBannerAd()
         }
+        
+        // Default highlight
+        highlightMenuItem(R.id.nav_home)
+    }
+
+    private fun setupFooter() {
+        findViewById<View>(R.id.nav_home).setOnClickListener {
+            highlightMenuItem(R.id.nav_home)
+            updateMainList(categorizedData)
+        }
+
+        findViewById<View>(R.id.nav_fav).setOnClickListener {
+            highlightMenuItem(R.id.nav_fav)
+            showFavorites()
+        }
+
+        findViewById<View>(R.id.nav_arcade).setOnClickListener {
+            // Share action
+            val sendIntent: Intent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, "Check out Gamorax for cool games!")
+                type = "text/plain"
+            }
+            startActivity(Intent.createChooser(sendIntent, null))
+        }
+    }
+
+    private fun highlightMenuItem(activeId: Int) {
+        val navItems = listOf(R.id.nav_home, R.id.nav_fav, R.id.nav_arcade)
+        
+        for (id in navItems) {
+            val view = findViewById<View>(id)
+            val icon = when(id) {
+                R.id.nav_home -> findViewById<ImageView>(R.id.iv_home)
+                R.id.nav_fav -> findViewById<ImageView>(R.id.iv_fav)
+                else -> findViewById<ImageView>(R.id.iv_arcade)
+            }
+            val text = when(id) {
+                R.id.nav_home -> findViewById<TextView>(R.id.tv_home)
+                R.id.nav_fav -> findViewById<TextView>(R.id.tv_fav)
+                else -> findViewById<TextView>(R.id.tv_arcade)
+            }
+
+            if (id == activeId) {
+                icon.setColorFilter(ContextCompat.getColor(this, R.color.accent_orange))
+                text.setTextColor(ContextCompat.getColor(this, R.color.accent_orange))
+            } else {
+                icon.setColorFilter(ContextCompat.getColor(this, R.color.text_secondary))
+                text.setTextColor(ContextCompat.getColor(this, R.color.text_secondary))
+            }
+        }
+    }
+
+    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+        if (event.action == MotionEvent.ACTION_DOWN) {
+            val v = currentFocus
+            if (v is EditText) {
+                val outRect = Rect()
+                v.getGlobalVisibleRect(outRect)
+                if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
+                    v.clearFocus()
+                    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(v.windowToken, 0)
+                }
+            }
+        }
+        return super.dispatchTouchEvent(event)
     }
 
     private fun initDrawer() {
@@ -62,8 +133,11 @@ class MainActivity : AppCompatActivity() {
 
         navigationView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.nav_profile -> Toast.makeText(this, "Profile clicked", Toast.LENGTH_SHORT).show()
-                R.id.nav_wallet -> Toast.makeText(this, "Wallet clicked", Toast.LENGTH_SHORT).show()
+//                R.id.nav_profile -> Toast.makeText(this, "Profile clicked", Toast.LENGTH_SHORT).show()
+//                R.id.nav_wallet -> Toast.makeText(this, "Wallet clicked", Toast.LENGTH_SHORT).show()
+                R.id.nav_settings -> {
+                    startActivity(Intent(this, SettingsActivity::class.java))
+                }
                 R.id.nav_logout -> finish()
             }
             drawerLayout.closeDrawer(GravityCompat.START)
@@ -72,20 +146,28 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupCarousel() {
-        val recyclerView = findViewById<RecyclerView>(R.id.carouselRecyclerView)
-        recyclerView.layoutManager = CarouselLayoutManager(HeroCarouselStrategy())
-        CarouselSnapHelper().attachToRecyclerView(recyclerView)
+        val carousel: ImageCarousel = findViewById(R.id.carousel)
+        carousel.registerLifecycle(lifecycle)
 
-        val items = listOf(
-            CarouselItem("TOWER CRASH", R.drawable.tower_crash, "https://play.famobi.com/wrapper/tower-crash-3d/A1000-10"),
-            CarouselItem("LUDUM DARE", R.drawable.ludum_dare, "https://antila.github.io/ludum-dare-28/"),
-            CarouselItem("ZOO BOOM", R.drawable.zoo_boom, "https://appslabs.store/games/zoo-boom/wrapper/zoo-boom/A1000-10.html")
-        )
+        val list = mutableListOf<CarouselItem>()
+        list.add(CarouselItem(imageDrawable = R.drawable.tower_crash, caption = "Tower Crash 3D"))
+        list.add(CarouselItem(imageDrawable = R.drawable.ludum_dare, caption = "Ludum Dare 28"))
+        list.add(CarouselItem(imageDrawable = R.drawable.zoo_boom, caption = "Zoo Boom"))
 
-        recyclerView.adapter = CarouselAdapter(items) { url -> openGame(url) }
+        carousel.setData(list)
+        carousel.carouselListener = object : CarouselListener {
+            override fun onClick(position: Int, carouselItem: CarouselItem) {
+                val urls = listOf(
+                    "https://play.famobi.com/wrapper/tower-crash-3d/A1000-10",
+                    "https://antila.github.io/ludum-dare-28/",
+                    "https://appslabs.store/games/zoo-boom/wrapper/zoo-boom/A1000-10.html"
+                )
+                openGame(urls[position])
+            }
+        }
     }
 
-    private fun setupCategories() {
+    private fun prepareData() {
         allGamesList = listOf(
             GameModel("Tower Crash", R.drawable.tower_crash, "https://play.famobi.com/wrapper/tower-crash-3d/A1000-10"),
             GameModel("Ludum Dare", R.drawable.ludum_dare, "https://antila.github.io/ludum-dare-28/"),
@@ -95,15 +177,48 @@ class MainActivity : AppCompatActivity() {
             GameModel("Quiz Master", R.drawable.quiz, "https://appslabs.store/games/click-combo-quiz")
         )
 
-        val allCategories = listOf(
+        categorizedData = listOf(
             CategoryModel("Quick Play", allGamesList.shuffled()),
             CategoryModel("Puzzle & Brain Games", allGamesList.shuffled()),
             CategoryModel("Action Games", allGamesList.shuffled())
         )
 
-        val filteredCategories = allCategories.filter { it.games.isNotEmpty() }
+        updateMainList(categorizedData)
+    }
+
+    private fun setupSearch() {
+        val searchBar = findViewById<EditText>(R.id.searchBar)
+        searchBar.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                performSearch(s.toString())
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
+    }
+
+    private fun performSearch(query: String) {
+        if (query.isEmpty()) {
+            updateMainList(categorizedData)
+            return
+        }
+
+        val filteredGames = allGamesList.filter { 
+            it.title.contains(query, ignoreCase = true) 
+        }
+
+        val searchResult = if (filteredGames.isNotEmpty()) {
+            listOf(CategoryModel("Search Results", filteredGames))
+        } else {
+            emptyList()
+        }
+
+        updateMainList(searchResult)
+    }
+
+    private fun updateMainList(data: List<CategoryModel>) {
         val rvMainCategories = findViewById<RecyclerView>(R.id.rvMainCategories)
-        categoryAdapter = CategoryAdapter(filteredCategories) { url -> openGame(url) }
+        categoryAdapter = CategoryAdapter(data) { url -> openGame(url) }
         rvMainCategories.adapter = categoryAdapter
     }
 
@@ -111,18 +226,14 @@ class MainActivity : AppCompatActivity() {
         val favGames = FavoritesManager.getFavorites(this)
         if (favGames.isEmpty()) {
             Toast.makeText(this, "No favorites added yet!", Toast.LENGTH_SHORT).show()
+            // If empty, keep highlight on Fav but maybe stay on Home data or show empty msg
+            val favCategories = listOf(CategoryModel("My Favorites ❤️", emptyList()))
+            updateMainList(favCategories)
             return
         }
 
-        // Group favorites (In a real API, games would have category tags. 
-        // For now, we put all favorites in a "My Favorites" category)
-        val favCategories = listOf(
-            CategoryModel("My Favorites ❤️", favGames)
-        )
-
-        val rvMainCategories = findViewById<RecyclerView>(R.id.rvMainCategories)
-        categoryAdapter = CategoryAdapter(favCategories) { url -> openGame(url) }
-        rvMainCategories.adapter = categoryAdapter
+        val favCategories = listOf(CategoryModel("My Favorites ❤️", favGames))
+        updateMainList(favCategories)
     }
 
     private fun openGame(url: String) {
@@ -140,10 +251,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        // Refresh UI to show updated favorites status if we returned from another screen
         if (::categoryAdapter.isInitialized) {
             categoryAdapter.notifyDataSetChanged()
         }
+        // Ensure Home is highlighted when returning from other activities (since it's the Home screen)
+        highlightMenuItem(R.id.nav_home)
     }
 
     override fun onBackPressed() {

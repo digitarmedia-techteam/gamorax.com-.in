@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dark Mode Palette (Black-based) -->
+    <color name="bg_main">#000000</color>
+    <color name="bg_card">#121212</color>
+    <color name="bg_search">#1E1E1E</color>
+    <color name="accent_orange">#FF9800</color>
+    <color name="accent_gold">#FFD700</color>
+    
+    <!-- Dynamic Card Border for Dark Mode -->
+    <color name="card_border">@color/neon_cyan</color>
+    
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#B0B0C3</color>
+    <color name="glass_white">#1AFFFFFF</color>
+    <color name="glass_stroke">#33FFFFFF</color>
+    
+    <!-- Neon Colors for Dark Mode -->
+    <color name="neon_purple">#BC13FE</color>
+    <color name="neon_cyan">#00F5FF</color>
+    
+    <!-- Status & Ad colors for Dark Mode -->
+    <color name="status_bar_color">#000000</color>
+    <color name="admob_background">#000000</color>
+    <color name="game_background">#000000</color>
+    <color name="game_ui_text">#FFFFFF</color>
+</resources>

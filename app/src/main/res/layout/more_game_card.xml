@@ -29,8 +29,8 @@
 
             <ImageView
                 android:id="@+id/gameImage"
-                android:layout_width="200dp"
-                android:layout_height="120dp"
+                android:layout_width="120dp"
+                android:layout_height="70dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/tower_crash"
                 app:layout_constraintTop_toTopOf="parent"
@@ -57,29 +57,14 @@
                 android:ellipsize="end"
                 android:fontFamily="sans-serif-black"
                 android:maxLines="1"
+                android:gravity="right"
                 android:text="Game Title"
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="@id/gameImage"
                 app:layout_constraintEnd_toEndOf="@id/gameImage"
                 app:layout_constraintStart_toStartOf="@id/gameImage" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
-
-    <!-- Floating Favorite Icon - Partially overlapping the top-right corner -->
-    <ImageView
-        android:id="@+id/ivFavorite"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:background="@drawable/hart_bg"
-        android:elevation="12dp"
-        android:padding="8dp"
-        android:src="@drawable/ic_favorite"
-        app:layout_constraintBottom_toTopOf="@id/gameCard"
-        app:layout_constraintEnd_toEndOf="@id/gameCard"
-        app:layout_constraintStart_toEndOf="@id/gameCard"
-        app:layout_constraintTop_toTopOf="@id/gameCard"
-        app:tint="@color/white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
