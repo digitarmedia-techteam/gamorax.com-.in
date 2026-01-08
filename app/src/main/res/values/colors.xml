@@ -4,7 +4,7 @@
     <color name="bg_main">#FFFFFF</color>
     <color name="bg_card">#F8F9FA</color>
     <color name="bg_search">#F1F3F4</color>
-    <color name="accent_orange">#FB8C00</color>
+    <color name="accent_orange">#31059b</color>
     <color name="accent_gold">#FFD700</color>
     
     <!-- Dynamic Card Border for Light Mode -->

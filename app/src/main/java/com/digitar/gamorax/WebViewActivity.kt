@@ -18,7 +18,7 @@ class WebViewActivity : AppCompatActivity() {
 
         webView = findViewById(R.id.webView)
         
-        val url = intent.getStringExtra("EXTRA_URL") ?: "https://antila.github.io/ludum-dare-28/"
+        val url = intent.getStringExtra("EXTRA_URL") ?: ""
         
         setupWebView()
         webView.loadUrl(url)

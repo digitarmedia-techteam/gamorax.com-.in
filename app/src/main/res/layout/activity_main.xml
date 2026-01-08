@@ -23,8 +23,8 @@
 
             <ImageView
                 android:id="@+id/menuButton"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
                 android:contentDescription="@string/app_name"
                 android:src="@drawable/ic_menu"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -70,34 +70,34 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:tint="@color/text_primary" />
 
-            <LinearLayout
-                android:id="@+id/toolbarWallet"
-                android:layout_width="wrap_content"
-                android:layout_height="32dp"
-                android:layout_marginEnd="12dp"
-                android:background="@drawable/search_bg"
-                android:gravity="center"
-                android:paddingHorizontal="12dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/notificationButton"
-                app:layout_constraintTop_toTopOf="parent">
+<!--            <LinearLayout-->
+<!--                android:id="@+id/toolbarWallet"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="32dp"-->
+<!--                android:layout_marginEnd="12dp"-->
+<!--                android:background="@drawable/search_bg"-->
+<!--                android:gravity="center"-->
+<!--                android:paddingHorizontal="12dp"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintEnd_toStartOf="@id/notificationButton"-->
+<!--                app:layout_constraintTop_toTopOf="parent">-->
 
-                <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:contentDescription="@string/app_name"
-                    android:src="@drawable/wallet" />
+<!--                <ImageView-->
+<!--                    android:layout_width="16dp"-->
+<!--                    android:layout_height="16dp"-->
+<!--                    android:contentDescription="@string/app_name"-->
+<!--                    android:src="@drawable/wallet" />-->
 
-                <TextView
-                    android:id="@+id/toolbarCoinCount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="6dp"
-                    android:fontFamily="sans-serif-medium"
-                    android:text="1,250"
-                    android:textColor="@color/text_primary"
-                    android:textSize="13sp" />
-            </LinearLayout>
+<!--                <TextView-->
+<!--                    android:id="@+id/toolbarCoinCount"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginStart="6dp"-->
+<!--                    android:fontFamily="sans-serif-medium"-->
+<!--                    android:text="1,250"-->
+<!--                    android:textColor="@color/text_primary"-->
+<!--                    android:textSize="13sp" />-->
+<!--            </LinearLayout>-->
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -105,14 +105,14 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:clipToPadding="false"
-            android:paddingBottom="20dp"
+            android:paddingBottom="10dp"
             app:layout_constraintBottom_toTopOf="@+id/bottomNavigationInclude"
             app:layout_constraintTop_toBottomOf="@id/toolbar">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="24dp">
+                android:paddingBottom="0dp">
 
                 <!-- Search Bar -->
                 <EditText
@@ -222,7 +222,7 @@
                     android:id="@+id/adView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="0dp"
                     app:adSize="BANNER"
                     app:adUnitId="ca-app-pub-3940256099942544/6300978111"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -236,7 +236,7 @@
             android:id="@+id/bottomNavigationInclude"
             layout="@layout/footer"
             android:layout_width="match_parent"
-            android:layout_height="70dp"
+            android:layout_height="80dp"
             app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

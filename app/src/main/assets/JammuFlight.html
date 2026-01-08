@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Jammu Flight</title>
+    <style>
+        body {
+          margin: 0;
+          overflow: hidden;
+          background: #111;
+          touch-action: none;
+        }
+
+        canvas {
+          display: block;
+          margin: auto;
+          background: #222;
+          max-width: 100%;
+          height: auto;
+          max-height: 100vh;
+          object-fit: contain;
+        }
+    </style>
+</head>
+
+<body>
+<canvas id="game"></canvas>
+<!-- <script src="menu.js"></script> -->
+<script>
+    (() => {
+      const canvas = document.getElementById("game");
+      const ctx = canvas.getContext("2d");
+      canvas.width = 360;
+      canvas.height = 600;
+      let state = 'start';
+      let player, pipes, lastSpawn, spawnInterval, speed, gap, score, best, lastTime, shake, particles, pulse;
+      let ac = null, muted = false, audioReady = false;
+      function resetGame() {
+        player = { x: 72, y: canvas.height * 0.45, r: 14, vy: 0, rot: 0 };
+        pipes = [];
+        speed = 2.2;
+        gap = 160;
+        spawnInterval = 1400;
+        lastSpawn = 0;
+        score = 0;
+        best = +(localStorage.getItem('jammuBest') || 0);
+        lastTime = 0;
+        shake = 0;
+        particles = [];
+        pulse = 0;
+      }
+      function unlockAudio() {
+        if (!ac) ac = new (window.AudioContext || window.webkitAudioContext)();
+        if (ac.state === 'suspended') ac.resume();
+        audioReady = true;
+      }
+      function sfx(type) {
+        if (!audioReady || muted) return;
+        const t = ac.currentTime;
+        const o = ac.createOscillator();
+        const g = ac.createGain();
+        let f = 440, dur = 0.09, curve = 'sine';
+        if (type === 'flap') { f = 700; dur = 0.06; curve = 'triangle'; }
+        else if (type === 'score') { f = 950; dur = 0.07; curve = 'square'; }
+        else if (type === 'hit') { f = 160; dur = 0.2; curve = 'sawtooth'; }
+        o.type = curve;
+        o.frequency.setValueAtTime(f, t);
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.exponentialRampToValueAtTime(0.3, t + 0.01);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+        o.connect(g); g.connect(ac.destination);
+        o.start(t); o.stop(t + dur + 0.02);
+      }
+      function spawnPipe() {
+        const margin = 40;
+        const range = canvas.height - margin * 2 - gap;
+        const gapY = margin + Math.random() * range + gap / 2;
+        const w = 56;
+        pipes.push({ x: canvas.width + 20, w, gapY, gap, passed: false });
+      }
+      function addParticles(x, y, color) {
+        for (let i = 0; i < 8; i++) {
+          const a = Math.random() * Math.PI * 2;
+          const s = 1 + Math.random() * 2.2;
+          particles.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, life: 1, color });
+        }
+      }
+      function collides(p, pipe) {
+        const px1 = pipe.x, px2 = pipe.x + pipe.w;
+        const topY = pipe.gapY - pipe.gap / 2;
+        const botY = pipe.gapY + pipe.gap / 2;
+        const cx = p.x, cy = p.y, r = p.r;
+        if (cx + r < px1 || cx - r > px2) return false;
+        if (cy - r < topY) return true;
+        if (cy + r > botY) return true;
+        return false;
+      }
+      function drawRoundedRect(x, y, w, h, r) {
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.arcTo(x + w, y, x + w, y + h, r);
+        ctx.arcTo(x + w, y + h, x, y + h, r);
+        ctx.arcTo(x, y + h, x, y, r);
+        ctx.arcTo(x, y, x + w, y, r);
+        ctx.closePath();
+        ctx.fill();
+      }
+      function update(dt) {
+        const k = dt / 16.6667;
+        if (state === 'play') {
+          player.vy += 0.4 * k;
+          player.y += player.vy * k;
+          player.rot = Math.max(-0.6, Math.min(1.0, player.vy * 0.06));
+          for (let i = pipes.length - 1; i >= 0; i--) {
+            const pipe = pipes[i];
+            pipe.x -= speed * k;
+            if (!pipe.passed && pipe.x + pipe.w < player.x) {
+              pipe.passed = true;
+              score += 1;
+              sfx('score');
+              addParticles(player.x + player.r + 2, player.y, '#0ff');
+            }
+            if (pipe.x + pipe.w < -10) pipes.splice(i, 1);
+            if (collides(player, pipe)) {
+              state = 'over';
+              shake = 10;
+              sfx('hit');
+              if (score > best) { best = score; localStorage.setItem('jammuBest', best); }
+            }
+          }
+          lastSpawn += dt;
+          if (lastSpawn > spawnInterval) { lastSpawn = 0; spawnPipe(); }
+          speed += 0.0008 * dt;
+          if (gap > 110) gap -= 0.002 * dt;
+          const ground = canvas.height - 40;
+          if (player.y + player.r > ground || player.y - player.r < 0) {
+            state = 'over';
+            shake = 10;
+            sfx('hit');
+            if (score > best) { best = score; localStorage.setItem('jammuBest', best); }
+          }
+        }
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const p = particles[i];
+          p.x += p.vx * k; p.y += p.vy * k; p.vy += 0.03 * k; p.life -= 0.02 * k;
+          if (p.life <= 0) particles.splice(i, 1);
+        }
+        pulse = Math.max(0, pulse - 0.05 * k);
+        if (shake > 0) shake -= 0.6 * k;
+      }
+      function draw() {
+        const g = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        g.addColorStop(0, '#0b1530');
+        g.addColorStop(1, '#101820');
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        const ground = canvas.height - 40;
+        ctx.fillStyle = '#1e2a3a';
+        ctx.fillRect(0, ground, canvas.width, 40);
+        ctx.save();
+        if (shake > 0) {
+          ctx.translate((Math.random() - 0.5) * shake, (Math.random() - 0.5) * shake);
+        }
+        for (const pipe of pipes) {
+          ctx.fillStyle = '#2ecc71';
+          const topY = 0;
+          const topH = pipe.gapY - pipe.gap / 2;
+          drawRoundedRect(pipe.x, topY, pipe.w, topH, 6);
+          const botY = pipe.gapY + pipe.gap / 2;
+          drawRoundedRect(pipe.x, botY, pipe.w, canvas.height - botY - 40, 6);
+          ctx.fillStyle = '#27ae60';
+          ctx.fillRect(pipe.x, topH - 10, pipe.w, 10);
+          ctx.fillRect(pipe.x, botY, pipe.w, 10);
+        }
+        for (const p of particles) {
+          ctx.globalAlpha = Math.max(0, p.life);
+          ctx.fillStyle = p.color || '#0ff';
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, 2 + 2 * p.life, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.globalAlpha = 1;
+        }
+        ctx.save();
+        ctx.translate(player.x, player.y);
+        ctx.rotate(player.rot);
+        const pr = player.r * (1 + pulse * 0.15);
+        ctx.fillStyle = '#00ffcc';
+        ctx.beginPath();
+        ctx.arc(0, 0, pr, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+        ctx.restore();
+        ctx.fillStyle = '#e9f0ff';
+        ctx.font = '700 24px system-ui, Arial, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(String(score), canvas.width / 2, 36);
+        if (state === 'start') {
+          ctx.fillStyle = 'rgba(0,0,0,0.35)';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = '#fff';
+          ctx.font = '700 28px system-ui, Arial, sans-serif';
+          ctx.fillText('Jammu Flight', canvas.width / 2, canvas.height * 0.3);
+          ctx.font = '500 16px system-ui, Arial, sans-serif';
+          ctx.fillText('Tap to start', canvas.width / 2, canvas.height * 0.42);
+          ctx.fillText('Tap/Space to flap, avoid pipes', canvas.width / 2, canvas.height * 0.48);
+          ctx.font = '500 14px system-ui, Arial, sans-serif';
+          ctx.fillText('Best: ' + (localStorage.getItem('jammuBest') || 0), canvas.width / 2, canvas.height * 0.55);
+        } else if (state === 'over') {
+          ctx.fillStyle = 'rgba(0,0,0,0.45)';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = '#fff';
+          ctx.font = '700 28px system-ui, Arial, sans-serif';
+          ctx.fillText('Game Over', canvas.width / 2, canvas.height * 0.35);
+          ctx.font = '600 18px system-ui, Arial, sans-serif';
+          ctx.fillText('Score: ' + score + '   Best: ' + best, canvas.width / 2, canvas.height * 0.45);
+          ctx.font = '500 16px system-ui, Arial, sans-serif';
+          ctx.fillText('Tap to restart', canvas.width / 2, canvas.height * 0.54);
+        }
+      }
+      function flap() {
+        if (state === 'start') { startGame(); return; }
+        if (state !== 'play') return;
+        player.vy = -7.8;
+        player.rot = -0.5;
+        pulse = 1;
+        addParticles(player.x - player.r - 2, player.y, '#00ffcc');
+        sfx('flap');
+      }
+      function startGame() {
+        unlockAudio();
+        resetGame();
+        state = 'play';
+        lastTime = performance.now();
+      }
+      function restart() {
+        resetGame();
+        state = 'start';
+      }
+      function onPointer() {
+        if (state === 'start') { startGame(); return; }
+        if (state === 'play') { flap(); return; }
+        if (state === 'over') { restart(); return; }
+      }
+      document.addEventListener('pointerdown', onPointer);
+      document.addEventListener('keydown', (e) => {
+        if (e.code === 'Space' || e.code === 'ArrowUp') { e.preventDefault(); onPointer(); }
+        if (e.key.toLowerCase() === 'm') { muted = !muted; }
+      });
+      resetGame();
+      function loop(t) {
+        if (!lastTime) lastTime = t;
+        const dt = Math.min(50, t - lastTime);
+        lastTime = t;
+        update(dt);
+        draw();
+        requestAnimationFrame(loop);
+      }
+      requestAnimationFrame(loop);
+    })();
+</script>
+</body>
+
+</html>

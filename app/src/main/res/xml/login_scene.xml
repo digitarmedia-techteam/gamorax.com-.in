@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:motion="http://schemas.android.com/apk/res-auto">
+
+    <Transition
+        motion:constraintSetStart="@id/start_intro"
+        motion:constraintSetEnd="@id/login"
+        motion:autoTransition="animateToEnd"
+        motion:duration="500"
+        motion:motionInterpolator="easeInOut" />
+
+    <Transition
+        motion:constraintSetStart="@id/login"
+        motion:constraintSetEnd="@id/signup"
+        motion:duration="450"
+        motion:motionInterpolator="easeInOut">
+        <OnClick
+            motion:targetId="@id/signUpTab"
+            motion:clickAction="transitionToEnd" />
+        <OnClick
+            motion:targetId="@id/loginTab"
+            motion:clickAction="transitionToStart" />
+    </Transition>
+
+    <ConstraintSet android:id="@+id/start_intro">
+        <Constraint android:id="@id/formContainer">
+            <PropertySet android:alpha="0" />
+            <Transform android:translationY="24dp" />
+        </Constraint>
+        <Constraint android:id="@id/forgotPassword">
+            <PropertySet android:alpha="0" />
+            <Transform android:translationY="12dp" />
+        </Constraint>
+        <Constraint android:id="@id/slideButtonTrack">
+            <PropertySet android:alpha="0" />
+            <Transform android:translationY="16dp" />
+        </Constraint>
+        <Constraint android:id="@id/selectionIndicator">
+            <Layout
+                android:layout_width="120dp"
+                android:layout_height="44dp"
+                app:layout_constraintStart_toStartOf="@id/loginTab"
+                app:layout_constraintTop_toTopOf="@id/loginTab" />
+        </Constraint>
+        <Constraint android:id="@id/loginTab">
+            <PropertySet android:alpha="1" />
+        </Constraint>
+        <Constraint android:id="@id/signUpTab">
+            <PropertySet android:alpha="0.5" />
+        </Constraint>
+    </ConstraintSet>
+
+    <ConstraintSet android:id="@+id/login">
+        <Constraint android:id="@id/formContainer">
+            <PropertySet android:alpha="1" />
+            <Transform android:translationY="0dp" />
+        </Constraint>
+        <Constraint android:id="@id/forgotPassword">
+            <PropertySet android:alpha="1" />
+            <Transform android:translationY="0dp" />
+        </Constraint>
+        <Constraint android:id="@id/slideButtonTrack">
+            <PropertySet android:alpha="1" />
+            <Transform android:translationY="0dp" />
+        </Constraint>
+        <Constraint android:id="@id/selectionIndicator">
+            <Layout
+                android:layout_width="120dp"
+                android:layout_height="44dp"
+                app:layout_constraintStart_toStartOf="@id/loginTab"
+                app:layout_constraintTop_toTopOf="@id/loginTab" />
+        </Constraint>
+        <Constraint android:id="@id/loginTab">
+            <PropertySet android:alpha="1" />
+        </Constraint>
+        <Constraint android:id="@id/signUpTab">
+            <PropertySet android:alpha="0.5" />
+        </Constraint>
+    </ConstraintSet>
+
+    <ConstraintSet android:id="@+id/signup">
+        <Constraint android:id="@id/selectionIndicator">
+            <Layout
+                android:layout_width="120dp"
+                android:layout_height="44dp"
+                app:layout_constraintStart_toStartOf="@id/signUpTab"
+                app:layout_constraintTop_toTopOf="@id/signUpTab" />
+        </Constraint>
+        <Constraint android:id="@id/loginTab">
+            <PropertySet android:alpha="0.5" />
+        </Constraint>
+        <Constraint android:id="@id/signUpTab">
+            <PropertySet android:alpha="1" />
+        </Constraint>
+    </ConstraintSet>
+
+</MotionScene>
