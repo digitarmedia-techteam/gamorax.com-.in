@@ -30,12 +30,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".authorization.loginActivity"
+            android:name=".authorization.LoginActivity"
             android:exported="false"
-            android:theme="@style/FullscreenTheme" />
-        <activity
-            android:name=".authorization.SignUpActivity"
-            android:exported="false" />
+            android:theme="@style/Theme.Gamorax" />
         <activity
             android:name=".notification"
             android:exported="false" />

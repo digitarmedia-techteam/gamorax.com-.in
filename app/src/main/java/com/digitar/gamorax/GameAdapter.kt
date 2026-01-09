@@ -1,11 +1,14 @@
 package com.digitar.gamorax
 
+import android.animation.ObjectAnimator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.BounceInterpolator
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.digitar.gamorax.util.AnimationUtils
 
 class GameAdapter(
     private var games: List<GameModel>,
@@ -42,9 +45,15 @@ class GameAdapter(
         holder.card.setOnClickListener { onGameClick(game.url) }
         
         holder.ivFavorite.setOnClickListener {
+            val isCurrentlyFav = FavoritesManager.isFavorite(context, game.url)
+            if (!isCurrentlyFav) {
+                // Only show animation when adding to favorites
+                AnimationUtils.createHeartAnimation(holder.ivFavorite)
+                bounceAnimation(holder.ivFavorite)
+            }
+            
             FavoritesManager.toggleFavorite(context, game)
             notifyItemChanged(position)
-            // Trigger refresh of main categories if needed (callback could be added)
         }
     }
 
@@ -53,5 +62,16 @@ class GameAdapter(
     fun updateData(newGames: List<GameModel>) {
         this.games = newGames
         notifyDataSetChanged()
+    }
+
+    private fun bounceAnimation(view: View) {
+        val scaleX = ObjectAnimator.ofFloat(view, "scaleX", 0.8f, 1.2f, 1.0f)
+        val scaleY = ObjectAnimator.ofFloat(view, "scaleY", 0.8f, 1.2f, 1.0f)
+        scaleX.duration = 500
+        scaleY.duration = 500
+        scaleX.interpolator = BounceInterpolator()
+        scaleY.interpolator = BounceInterpolator()
+        scaleX.start()
+        scaleY.start()
     }
 }

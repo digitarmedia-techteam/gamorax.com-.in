@@ -1,0 +1,6 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:drawable="@drawable/bg_neon_dark"/>
+    <item android:drawable="@drawable/bg_vignette"/>
+
+</layer-list>

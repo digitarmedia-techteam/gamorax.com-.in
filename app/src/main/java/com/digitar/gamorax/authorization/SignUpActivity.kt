@@ -54,7 +54,7 @@ class SignUpActivity : AppCompatActivity() {
                     signUpTab.setTextColor(ContextCompat.getColor(this, R.color.text_secondary))
                 }
                 .withEndAction {
-                    val intent = Intent(this, loginActivity::class.java)
+                    val intent = Intent(this, LoginActivity::class.java)
                     startActivity(intent)
 //                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
                     finish()
@@ -75,7 +75,7 @@ class SignUpActivity : AppCompatActivity() {
                 MotionEvent.ACTION_DOWN -> {
                     dX = view.x - event.rawX
                     initialX = view.x
-                    false
+                    true // We are handling the touch event
                 }
                 MotionEvent.ACTION_MOVE -> {
                     if (!isSlid) {
@@ -104,7 +104,6 @@ class SignUpActivity : AppCompatActivity() {
                 }
                 else -> false
             }
-            true
         }
     }
 

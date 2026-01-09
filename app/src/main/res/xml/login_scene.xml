@@ -28,10 +28,6 @@
             <PropertySet android:alpha="0" />
             <Transform android:translationY="24dp" />
         </Constraint>
-        <Constraint android:id="@id/forgotPassword">
-            <PropertySet android:alpha="0" />
-            <Transform android:translationY="12dp" />
-        </Constraint>
         <Constraint android:id="@id/slideButtonTrack">
             <PropertySet android:alpha="0" />
             <Transform android:translationY="16dp" />
@@ -53,10 +49,6 @@
 
     <ConstraintSet android:id="@+id/login">
         <Constraint android:id="@id/formContainer">
-            <PropertySet android:alpha="1" />
-            <Transform android:translationY="0dp" />
-        </Constraint>
-        <Constraint android:id="@id/forgotPassword">
             <PropertySet android:alpha="1" />
             <Transform android:translationY="0dp" />
         </Constraint>

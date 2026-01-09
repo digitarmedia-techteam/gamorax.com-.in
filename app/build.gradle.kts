@@ -31,8 +31,11 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = "11"
+    kotlin {
+        jvmToolchain(11)
+    }
+    buildFeatures {
+        viewBinding = true
     }
 }
 
@@ -45,6 +48,7 @@ dependencies {
     implementation(libs.firebase.database)
     implementation(libs.gson)
     implementation(libs.imagecarousel)
+    implementation("androidx.fragment:fragment-ktx:1.8.9")
     
     testImplementation(libs.junit)
 

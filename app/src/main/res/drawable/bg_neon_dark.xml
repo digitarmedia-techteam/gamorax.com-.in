@@ -1,0 +1,23 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- BASE BLACK -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#FF000000"/>
+        </shape>
+    </item>
+
+    <!-- PURPLE NEON GLOW -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:type="radial"
+                android:gradientRadius="650dp"
+                android:centerX="0.5"
+                android:centerY="0.45"
+                android:startColor="#402B0040"
+                android:endColor="#00000000"/>
+        </shape>
+    </item>
+
+</layer-list>
