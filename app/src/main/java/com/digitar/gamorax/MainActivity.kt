@@ -22,6 +22,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
@@ -91,6 +92,9 @@ class MainActivity : AppCompatActivity() {
         setupFooter()
 
         adViewContainer = findViewById(R.id.adViewContainer)
+        findViewById<CardView>(R.id.moreGameCard).setOnClickListener {
+            Toast.makeText(this, "Coming Soon!", Toast.LENGTH_SHORT).show()
+        }
 
         findViewById<ImageView>(R.id.notificationButton).setOnClickListener {
             val intent = Intent(this, notification::class.java)

@@ -19,6 +19,8 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:paddingHorizontal="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
@@ -70,34 +72,34 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:tint="@color/text_primary" />
 
-<!--            <LinearLayout-->
-<!--                android:id="@+id/toolbarWallet"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="32dp"-->
-<!--                android:layout_marginEnd="12dp"-->
-<!--                android:background="@drawable/search_bg"-->
-<!--                android:gravity="center"-->
-<!--                android:paddingHorizontal="12dp"-->
-<!--                app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                app:layout_constraintEnd_toStartOf="@id/notificationButton"-->
-<!--                app:layout_constraintTop_toTopOf="parent">-->
+            <!--            <LinearLayout-->
+            <!--                android:id="@+id/toolbarWallet"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="32dp"-->
+            <!--                android:layout_marginEnd="12dp"-->
+            <!--                android:background="@drawable/search_bg"-->
+            <!--                android:gravity="center"-->
+            <!--                android:paddingHorizontal="12dp"-->
+            <!--                app:layout_constraintBottom_toBottomOf="parent"-->
+            <!--                app:layout_constraintEnd_toStartOf="@id/notificationButton"-->
+            <!--                app:layout_constraintTop_toTopOf="parent">-->
 
-<!--                <ImageView-->
-<!--                    android:layout_width="16dp"-->
-<!--                    android:layout_height="16dp"-->
-<!--                    android:contentDescription="@string/app_name"-->
-<!--                    android:src="@drawable/wallet" />-->
+            <!--                <ImageView-->
+            <!--                    android:layout_width="16dp"-->
+            <!--                    android:layout_height="16dp"-->
+            <!--                    android:contentDescription="@string/app_name"-->
+            <!--                    android:src="@drawable/wallet" />-->
 
-<!--                <TextView-->
-<!--                    android:id="@+id/toolbarCoinCount"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_marginStart="6dp"-->
-<!--                    android:fontFamily="sans-serif-medium"-->
-<!--                    android:text="1,250"-->
-<!--                    android:textColor="@color/text_primary"-->
-<!--                    android:textSize="13sp" />-->
-<!--            </LinearLayout>-->
+            <!--                <TextView-->
+            <!--                    android:id="@+id/toolbarCoinCount"-->
+            <!--                    android:layout_width="wrap_content"-->
+            <!--                    android:layout_height="wrap_content"-->
+            <!--                    android:layout_marginStart="6dp"-->
+            <!--                    android:fontFamily="sans-serif-medium"-->
+            <!--                    android:text="1,250"-->
+            <!--                    android:textColor="@color/text_primary"-->
+            <!--                    android:textSize="13sp" />-->
+            <!--            </LinearLayout>-->
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -176,41 +178,6 @@
 
                     <include
                         android:id="@+id/moreCard1"
-                        layout="@layout/more_game_card"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_columnWeight="1" />
-
-                    <include
-                        android:id="@+id/moreCard2"
-                        layout="@layout/more_game_card"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_columnWeight="1" />
-
-                    <include
-                        android:id="@+id/moreCard3"
-                        layout="@layout/more_game_card"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_columnWeight="1" />
-
-                    <include
-                        android:id="@+id/moreCard4"
-                        layout="@layout/more_game_card"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_columnWeight="1" />
-
-                    <include
-                        android:id="@+id/moreCard5"
-                        layout="@layout/more_game_card"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_columnWeight="1" />
-
-                    <include
-                        android:id="@+id/moreCard6"
                         layout="@layout/more_game_card"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
