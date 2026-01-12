@@ -10,15 +10,17 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.DisplayMetrics
+import android.view.Display
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.addCallback
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
@@ -26,9 +28,17 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.digitar.gamorax.ads.AdManager
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import com.google.android.gms.ads.FullScreenContentCallback
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.AdError
+
 import com.digitar.gamorax.authorization.LoginPopupDialog
 import com.digitar.gamorax.authorization.LoginActivity
 import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 import com.google.android.material.navigation.NavigationView
@@ -40,11 +50,18 @@ class MainActivity : AppCompatActivity() {
     private lateinit var adView: AdView
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var categoryAdapter: CategoryAdapter
+    private var interstitialAd: InterstitialAd? = null
+    private var pendingGameUrl: String? = null
+
     private var allGamesList = listOf<GameModel>()
     private var categorizedData = listOf<CategoryModel>()
+    private lateinit var adViewContainer: FrameLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AdManager.initialize(this)
+        MobileAds.initialize(this) { }
+        loadInterstitialAd()
 
         onBackPressedDispatcher.addCallback(this) {
             if (::drawerLayout.isInitialized && drawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -73,14 +90,16 @@ class MainActivity : AppCompatActivity() {
         setupSearch()
         setupFooter()
 
+        adViewContainer = findViewById(R.id.adViewContainer)
+
         findViewById<ImageView>(R.id.notificationButton).setOnClickListener {
             val intent = Intent(this, notification::class.java)
             startActivity(intent)
         }
 
-        MobileAds.initialize(this) {
-            loadBannerAd()
-        }
+        MobileAds.initialize(this) { }
+
+        loadBannerAd()
 
         highlightMenuItem(R.id.nav_home)
 
@@ -336,64 +355,122 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun openGame(gameUrl: String) {
-        if (isConsentExpired()) {
-            showAffiliateConsent(gameUrl)
+        pendingGameUrl = gameUrl
+
+        if (interstitialAd != null) {
+
+            interstitialAd?.fullScreenContentCallback =
+                object : FullScreenContentCallback() {
+
+                    override fun onAdDismissedFullScreenContent() {
+                        interstitialAd = null
+                        loadInterstitialAd() // preload next
+                        openGameDirect()
+                    }
+
+                    override fun onAdFailedToShowFullScreenContent(adError: AdError) {
+                        interstitialAd = null
+                        openGameDirect()
+                    }
+                }
+
+            interstitialAd?.show(this)
+
         } else {
-            val intent =
-                Intent(this, WebViewActivity::class.java).apply { putExtra("EXTRA_URL", gameUrl) }
-            startActivity(intent)
+            openGameDirect()
         }
     }
+
 
     private fun isConsentExpired(): Boolean {
         val prefs = getSharedPreferences("app_prefs", MODE_PRIVATE)
         val lastConsentTime = prefs.getLong("last_consent_time", 0)
-        return (System.currentTimeMillis() - lastConsentTime) > (60 * 1000)
+        return (System.currentTimeMillis() - lastConsentTime) > (60*60*60 * 1000)
     }
 
     private fun saveConsentTime() {
         getSharedPreferences("app_prefs", MODE_PRIVATE).edit()
             .putLong("last_consent_time", System.currentTimeMillis()).apply()
     }
+    private fun openGameDirect() {
+        val url = pendingGameUrl ?: return
 
-    private fun showAffiliateConsent(gameUrl: String) {
-        androidx.appcompat.app.AlertDialog.Builder(this)
-            .setTitle("Support Us")
-            .setMessage("This game is supported by our partners. You may see a sponsor page briefly before the game starts.")
-            .setPositiveButton("Continue") { _, _ ->
-                saveConsentTime()
-                openAffiliateThenGame(gameUrl)
-            }
-            .setNegativeButton("Cancel") { _, _ -> openGame(gameUrl) }
-            .setCancelable(false)
-            .show()
+        if (isConsentExpired()) {
+            openAffiliateThenGame(url)
+        } else {
+            val intent = Intent(this, WebViewActivity::class.java)
+            intent.putExtra("EXTRA_URL", url)
+            startActivity(intent)
+        }
     }
+
+//    private fun showAffiliateConsent(gameUrl: String) {
+//        androidx.appcompat.app.AlertDialog.Builder(this)
+//            .setTitle("Support Us")
+//            .setMessage("This game is supported by our partners. You may see a sponsor page briefly before the game starts.")
+//            .setPositiveButton("Continue") { _, _ ->
+//                saveConsentTime()
+//                openAffiliateThenGame(gameUrl)
+//            }
+//            .setNegativeButton("Cancel") { _, _ -> openGame(gameUrl) }
+//            .setCancelable(false)
+//            .show()
+//    }
 
     private fun openAffiliateThenGame(gameUrl: String) {
         val intent = Intent(this, WebViewActivity::class.java).apply {
-            putExtra("EXTRA_URL", "https://track.digitarmedia.com/c?o=1370&a=1011")
+//            putExtra("EXTRA_URL", "https://track.digitarmedia.com/c?o=1370&a=1011")
             putExtra("NEXT_URL", gameUrl)
         }
         startActivity(intent)
     }
 
     private fun loadBannerAd() {
-        adView = findViewById(R.id.adView)
+        adView = AdView(this)
+        adView.adUnitId = "ca-app-pub-3940256099942544/9214589741"
+        adViewContainer.addView(adView)
+
+        adView.setAdSize(adSize)  // 👈 directly use property
+
         val adRequest = AdRequest.Builder().build()
         adView.loadAd(adRequest)
     }
+    private fun loadInterstitialAd() {
+        val adRequest = AdRequest.Builder().build()
+
+        InterstitialAd.load(
+            this,
+            "ca-app-pub-3940256099942544/1033173712", // ✅ TEST interstitial ID
+            adRequest,
+            object : InterstitialAdLoadCallback() {
+
+                override fun onAdLoaded(ad: InterstitialAd) {
+                    interstitialAd = ad
+                }
+
+                override fun onAdFailedToLoad(error: LoadAdError) {
+                    interstitialAd = null
+                }
+            }
+        )
+    }
+
+    private val adSize: AdSize
+        get() {
+            val display: Display = windowManager.defaultDisplay
+            val outMetrics = DisplayMetrics()
+            display.getMetrics(outMetrics)
+
+            val widthPixels = outMetrics.widthPixels.toFloat()
+            val density = outMetrics.density
+
+            val adWidth = (widthPixels / density).toInt()
+            return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, adWidth)
+        }
 
     override fun onResume() {
         super.onResume()
         if (::categoryAdapter.isInitialized) categoryAdapter.notifyDataSetChanged()
         highlightMenuItem(R.id.nav_home)
-    }
-
-    override fun onBackPressed() {
-        if (::drawerLayout.isInitialized && drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START)
-        } else {
-            super.onBackPressed()
-        }
     }
 }

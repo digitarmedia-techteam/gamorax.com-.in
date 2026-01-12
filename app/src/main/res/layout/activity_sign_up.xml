@@ -73,7 +73,7 @@
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:src="@drawable/console"
-        android:scaleType="fitCenter"
+        android.scaleType="fitCenter"
         app:layout_constraintTop_toBottomOf="@id/tabContainer"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -224,5 +224,19 @@
             android:rotation="180"
             app:tint="@color/white" />
     </FrameLayout>
+
+    <TextView
+        android:id="@+id/tvSwitchToLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:padding="8dp"
+        android:text="Already have an account? Login"
+        android:textColor="@color/text_secondary"
+        app:layout_constraintTop_toBottomOf="@id/slideButtonTrack"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="14sp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

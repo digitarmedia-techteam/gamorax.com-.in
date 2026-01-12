@@ -149,8 +149,8 @@
             android:layout_height="wrap_content"
             android:padding="8dp"
             android:text="Login with Email"
-            android:textStyle="bold"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 

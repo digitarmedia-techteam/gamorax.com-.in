@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatButton
+import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.DialogFragment
 import com.digitar.gamorax.R
 
@@ -39,13 +40,19 @@ class LoginPopupDialog : DialogFragment() {
             dismiss()
         }
 
-        view.findViewById<TextView>(R.id.txtEmailLogin).setOnClickListener {
-            startActivity(Intent(requireContext(), LoginActivity::class.java))
+        view.findViewById<TextView>(R.id.txtEmailLogin).setOnClickListener {            val intent = Intent(requireContext(), LoginActivity::class.java)
+            val options = ActivityOptionsCompat.makeCustomAnimation(
+                requireContext(),
+                R.animator.card_flip_up_in,
+                R.animator.card_flip_up_out
+            )
+            startActivity(intent, options.toBundle())
             dismiss()
         }
+        
 
         // Add other click listeners for Google/Apple if needed
     }
-
+    
     // onStart() is no longer needed as styling is handled by the theme
 }

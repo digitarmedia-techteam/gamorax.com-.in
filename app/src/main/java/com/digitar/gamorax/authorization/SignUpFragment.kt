@@ -24,7 +24,7 @@ class SignupFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.tvSwitchToLogin.setOnClickListener {
-            (activity as? AuthActivity)?.navigateToLogin()
+            (activity as? LoginActivity)?.navigateToLogin()
         }
     }
 

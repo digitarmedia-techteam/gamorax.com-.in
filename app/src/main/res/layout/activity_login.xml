@@ -8,7 +8,7 @@
     android:background="@color/bg_main"
     tools:context=".authorization.loginActivity">
 
-    <FrameLayout
+    <!--<FrameLayout
         android:id="@+id/tabContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -51,13 +51,13 @@
                 android:textSize="16sp"
                 android:textStyle="bold" />
         </LinearLayout>
-    </FrameLayout>
+    </FrameLayout>-->
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_container_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tabContainer" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

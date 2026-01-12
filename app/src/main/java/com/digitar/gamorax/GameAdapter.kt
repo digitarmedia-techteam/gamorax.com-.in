@@ -23,27 +23,28 @@ class GameAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GameViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_game_card, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.item_game_card, parent, false)
         return GameViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: GameViewHolder, position: Int) {
         val game = games[position]
         val context = holder.itemView.context
-        
+
         holder.gameTitle.text = game.title
         holder.gameImage.setImageResource(game.imageRes)
-        
+
         // Handle favorite status UI
         val isFav = FavoritesManager.isFavorite(context, game.url)
         holder.ivFavorite.setImageResource(if (isFav) R.drawable.ic_favorite else R.drawable.ic_favorite)
         holder.ivFavorite.setColorFilter(
-            if (isFav) context.getColor(android.R.color.holo_red_dark) 
+            if (isFav) context.getColor(android.R.color.holo_red_dark)
             else context.getColor(android.R.color.white)
         )
 
         holder.card.setOnClickListener { onGameClick(game.url) }
-        
+
         holder.ivFavorite.setOnClickListener {
             val isCurrentlyFav = FavoritesManager.isFavorite(context, game.url)
             if (!isCurrentlyFav) {
@@ -51,14 +52,14 @@ class GameAdapter(
                 AnimationUtils.createHeartAnimation(holder.ivFavorite)
                 bounceAnimation(holder.ivFavorite)
             }
-            
+
             FavoritesManager.toggleFavorite(context, game)
             notifyItemChanged(position)
         }
     }
 
     override fun getItemCount() = games.size
-    
+
     fun updateData(newGames: List<GameModel>) {
         this.games = newGames
         notifyDataSetChanged()

@@ -41,26 +41,26 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun setupTabNavigation() {
-        val loginTab = findViewById<TextView>(R.id.loginTab)
-        val signUpTab = findViewById<TextView>(R.id.signUpTab)
-        val selectionIndicator = findViewById<View>(R.id.selectionIndicator)
+//        val loginTab = findViewById<TextView>(R.id.loginTab)
+        val signUpTab = findViewById<TextView>(R.id.tvSwitchToSignup)
+//        val selectionIndicator = findViewById<View>(R.id.selectionIndicator)
 
-        loginTab.setOnClickListener {
-            selectionIndicator.animate()
-                .translationX(-selectionIndicator.width.toFloat())
-                .setDuration(300)
-                .withStartAction {
-                    loginTab.setTextColor(ContextCompat.getColor(this, R.color.white))
-                    signUpTab.setTextColor(ContextCompat.getColor(this, R.color.text_secondary))
-                }
-                .withEndAction {
-                    val intent = Intent(this, LoginActivity::class.java)
-                    startActivity(intent)
-//                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
-                    finish()
-                }
-                .start()
-        }
+//        loginTab.setOnClickListener {
+//            selectionIndicator.animate()
+//                .translationX(-selectionIndicator.width.toFloat())
+//                .setDuration(300)
+//                .withStartAction {
+//                    loginTab.setTextColor(ContextCompat.getColor(this, R.color.white))
+//                    signUpTab.setTextColor(ContextCompat.getColor(this, R.color.text_secondary))
+//                }
+//                .withEndAction {
+//                    val intent = Intent(this, LoginActivity::class.java)
+//                    startActivity(intent)
+////                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+//                    finish()
+//                }
+//                .start()
+//        }
     }
 
     @SuppressLint("ClickableViewAccessibility")

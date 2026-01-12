@@ -49,10 +49,21 @@ dependencies {
     implementation(libs.gson)
     implementation(libs.imagecarousel)
     implementation("androidx.fragment:fragment-ktx:1.8.9")
-    
-    testImplementation(libs.junit)
+    implementation("androidx.lifecycle:lifecycle-process:2.10.0")
 
+    // Google Mobile Ads
     implementation("com.google.android.gms:play-services-ads:24.9.0")
+
+    // Firebase (Bill of Materials)
+    implementation(platform("com.google.firebase:firebase-bom:34.7.0"))
+
+    // Firebase Analytics
+    implementation("com.google.firebase:firebase-analytics-ktx:22.5.0")
+
+    // Firebase Remote Config
+    implementation("com.google.firebase:firebase-config-ktx:22.1.2")
+
+    testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }
