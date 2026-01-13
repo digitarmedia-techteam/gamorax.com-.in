@@ -151,43 +151,84 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupScrollData() {
-        val nestedScrollView = findViewById<androidx.core.widget.NestedScrollView>(R.id.mainScrollView)
+        val nestedScrollView =
+            findViewById<androidx.core.widget.NestedScrollView>(R.id.mainScrollView)
         val searchBar = findViewById<View>(R.id.searchBar)
         val bottomNav = findViewById<View>(R.id.bottomNavigationInclude)
-        
+
         // Scroll State tracking
         var isScrollingDown = false
-        
+
         // Handler for idle detection
         val scrollHandler = android.os.Handler(android.os.Looper.getMainLooper())
         val scrollRunnable = Runnable {
             // Scroll has stopped
             if (!isScrollingDown) {
-                 // Resume carousel only if not scrolling
-                 if (::premiumCarouselManager.isInitialized) {
-                     premiumCarouselManager.startAutoScroll()
-                 }
+                // Resume carousel only if not scrolling
+                if (::premiumCarouselManager.isInitialized) {
+                    premiumCarouselManager.startAutoScroll()
+                }
             }
         }
 
         nestedScrollView.setOnScrollChangeListener(androidx.core.widget.NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
             val dy = scrollY - oldScrollY
-            
+
             // 1. Carousel Sync & Animation
             val carouselView = findViewById<View>(R.id.premium_carousel_include)
             if (carouselView != null) {
                 // Calculate scale factor based on scroll position - shrinks as you scroll down
-                // Starts at 1.0, shrinks to 0.85 by 500 pixels of scroll
                 val maxScroll = 500f
                 val scale = (1.0f - (0.15f * (scrollY.toFloat() / maxScroll).coerceIn(0f, 1f)))
-                
+
                 carouselView.animate()
                     .scaleX(scale)
                     .scaleY(scale)
-                    .alpha(if(scrollY > 600) 0.1f else 1f) // Fade out slightly if scrolled far
-                    .setDuration(0) // Instant update for scroll loop
+                    .alpha(if (scrollY > 600) 0.1f else 1f)
+                    .setDuration(0)
                     .start()
             }
+
+            // 2. Animate Game Cards / Categories based on screen position
+            val rvMainCategories = findViewById<RecyclerView>(R.id.rvMainCategories)
+            val screenHeight = resources.displayMetrics.heightPixels
+            val scrollBounds = Rect()
+            nestedScrollView.getHitRect(scrollBounds)
+
+            for (i in 0 until rvMainCategories.childCount) {
+                val child = rvMainCategories.getChildAt(i)
+                val childRect = Rect()
+                child.getGlobalVisibleRect(childRect)
+
+                // Calculate vertical center of the view relative to screen
+                val childCenterY = childRect.centerY()
+                val screenCenterY = screenHeight / 2
+
+                // Distance from center (0 to 1)
+                val distanceFromCenter =
+                    Math.abs(childCenterY - screenCenterY).toFloat() / (screenHeight / 2)
+
+                // Scale factor: 1.0 at center, drops to 0.9 at edges
+                val scaleFactor = 1.0f - (distanceFromCenter * 0.1f).coerceIn(0f, 0.1f)
+
+                child.scaleX = scaleFactor
+                child.scaleY = scaleFactor
+                child.alpha = 1.0f - (distanceFromCenter * 0.3f).coerceIn(0f, 0.5f)
+            }
+
+            // Also animate the "More Games" section if visible
+            val moreGamesCard = findViewById<View>(R.id.moreGameCard)
+            if (moreGamesCard != null) {
+                val rect = Rect()
+                moreGamesCard.getGlobalVisibleRect(rect)
+                val centerY = rect.centerY()
+                val screenCenterY = screenHeight / 2
+                val dist = Math.abs(centerY - screenCenterY).toFloat() / (screenHeight / 2)
+                val scale = 1.0f - (dist * 0.1f).coerceIn(0f, 0.1f)
+                moreGamesCard.scaleX = scale
+                moreGamesCard.scaleY = scale
+            }
+
 
             if (::premiumCarouselManager.isInitialized) {
                 premiumCarouselManager.stopAutoScroll()
@@ -195,8 +236,8 @@ class MainActivity : AppCompatActivity() {
                 scrollHandler.postDelayed(scrollRunnable, 1000) // Resume after 1s of idle
             }
 
-            // 2. Animations (Search Bar & Footer)
-            if (dy > 10) { 
+            // 3. Animations (Search Bar & Footer)
+            if (dy > 10) {
                 // Scrolling DOWN -> Hide Header & Footer
                 if (!isScrollingDown) {
                     isScrollingDown = true
@@ -274,7 +315,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(browserIntent)
         }
     }
-    
+
     private fun highlightMenuItem(activeId: Int) {
         val navItems = listOf(R.id.nav_home, R.id.nav_fav, R.id.nav_arcade)
         for (id in navItems) {
@@ -326,7 +367,13 @@ class MainActivity : AppCompatActivity() {
             when (menuItem.itemId) {
                 R.id.nav_profile -> startActivity(Intent(this, LoginActivity::class.java))
                 R.id.nav_settings -> startActivity(Intent(this, SettingsActivity::class.java))
-                R.id.more_about_us -> startActivity(Intent(this, PremiumCarouselActivity::class.java))
+                R.id.more_about_us -> startActivity(
+                    Intent(
+                        this,
+                        PremiumCarouselActivity::class.java
+                    )
+                )
+
                 R.id.nav_logout -> finish()
             }
             drawerLayout.closeDrawer(GravityCompat.START)
@@ -337,13 +384,13 @@ class MainActivity : AppCompatActivity() {
     private fun setupCarousel() {
         // Initialize premium carousel manager
         premiumCarouselManager = PremiumCarouselManager(this, lifecycle)
-        
+
         // Get views from included layout
         val carouselInclude = findViewById<View>(R.id.premium_carousel_include)
         val viewPager = carouselInclude.findViewById<ViewPager2>(R.id.premium_carousel_viewpager)
         // Indicator removed as per request
         val indicatorContainer: LinearLayout? = null
-        
+
         // Create carousel items from existing games
         val carouselItems = listOf(
             PremiumCarouselItem(
@@ -388,7 +435,7 @@ class MainActivity : AppCompatActivity() {
                 url = "https://www.google.com/"
             )
         )
-        
+
         // Initialize carousel
         premiumCarouselManager.initialize(
             viewPager = viewPager,
@@ -471,7 +518,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadRewardedAd() {
         val adRequest = AdRequest.Builder().build()
-        RewardedAd.load(this, "ca-app-pub-3940256099942544/5224354917", // Test ID
+        RewardedAd.load(
+            this, "ca-app-pub-3940256099942544/5224354917", // Test ID
             adRequest, object : RewardedAdLoadCallback() {
                 override fun onAdFailedToLoad(adError: LoadAdError) {
                     rewardedAd = null
@@ -491,7 +539,8 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun onAdFailedToShowFullScreenContent(adError: AdError) {
-                    Toast.makeText(this@MainActivity, "Ad failed to show.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@MainActivity, "Ad failed to show.", Toast.LENGTH_SHORT)
+                        .show()
                 }
 
                 override fun onAdShowedFullScreenContent() {
@@ -506,7 +555,6 @@ class MainActivity : AppCompatActivity() {
             loadRewardedAd()
         }
     }
-
 
     private fun performSearch(query: String) {
         if (query.isEmpty()) {
@@ -566,17 +614,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     private fun isConsentExpired(): Boolean {
         val prefs = getSharedPreferences("app_prefs", MODE_PRIVATE)
         val lastConsentTime = prefs.getLong("last_consent_time", 0)
-        return (System.currentTimeMillis() - lastConsentTime) > (60*60*60 * 1000)
+        return (System.currentTimeMillis() - lastConsentTime) > (60 * 60 * 60 * 1000)
     }
 
     private fun saveConsentTime() {
         getSharedPreferences("app_prefs", MODE_PRIVATE).edit()
             .putLong("last_consent_time", System.currentTimeMillis()).apply()
     }
+
     private fun openGameDirect() {
         val url = pendingGameUrl ?: return
 
@@ -620,6 +668,7 @@ class MainActivity : AppCompatActivity() {
         val adRequest = AdRequest.Builder().build()
         adView.loadAd(adRequest)
     }
+
     private fun loadInterstitialAd() {
         val adRequest = AdRequest.Builder().build()
 
