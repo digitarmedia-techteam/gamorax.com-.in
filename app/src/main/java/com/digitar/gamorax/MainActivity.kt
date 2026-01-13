@@ -385,7 +385,7 @@ class MainActivity : AppCompatActivity() {
                 subtitle = "Adventure • Flying",
                 category = "TRENDING",
                 imageRes = R.drawable.words_of_wonders,
-                url = "file:///android_asset/JammuFlight.html"
+                url = "https://www.google.com/"
             )
         )
         
@@ -425,7 +425,7 @@ class MainActivity : AppCompatActivity() {
             GameModel(
                 "Jammu Flight",
                 R.drawable.words_of_wonders,
-                "file:///android_asset/JammuFlight.html"
+                "https://www.google.com/"
             ),
             GameModel(
                 "Quiz Master",
