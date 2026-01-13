@@ -18,6 +18,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.addCallback
@@ -29,6 +30,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.digitar.gamorax.ads.AdManager
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
@@ -42,6 +44,8 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.rewarded.RewardedAd
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.google.android.material.navigation.NavigationView
 import org.imaginativeworld.whynotimagecarousel.ImageCarousel
 import org.imaginativeworld.whynotimagecarousel.listener.CarouselListener
@@ -52,17 +56,20 @@ class MainActivity : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var categoryAdapter: CategoryAdapter
     private var interstitialAd: InterstitialAd? = null
+    private var rewardedAd: RewardedAd? = null
     private var pendingGameUrl: String? = null
 
     private var allGamesList = listOf<GameModel>()
     private var categorizedData = listOf<CategoryModel>()
     private lateinit var adViewContainer: FrameLayout
+    private lateinit var premiumCarouselManager: PremiumCarouselManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AdManager.initialize(this)
         MobileAds.initialize(this) { }
         loadInterstitialAd()
+        loadRewardedAd()
 
         onBackPressedDispatcher.addCallback(this) {
             if (::drawerLayout.isInitialized && drawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -90,10 +97,13 @@ class MainActivity : AppCompatActivity() {
         prepareData()
         setupSearch()
         setupFooter()
+        setupScrollData()
 
         adViewContainer = findViewById(R.id.adViewContainer)
         findViewById<CardView>(R.id.moreGameCard).setOnClickListener {
-            Toast.makeText(this, "Coming Soon!", Toast.LENGTH_SHORT).show()
+            showRewardedAd {
+                Toast.makeText(this, "Thanks for your support!", Toast.LENGTH_SHORT).show()
+            }
         }
 
         findViewById<ImageView>(R.id.notificationButton).setOnClickListener {
@@ -132,6 +142,94 @@ class MainActivity : AppCompatActivity() {
 //            openPlayStoreAndBrowserTogether()
             Share()
         }
+
+        // Initialize footer animation state
+        findViewById<View>(R.id.bottomNavigationInclude).apply {
+            // Ensure proper initial state if needed
+            translationY = 0f
+        }
+    }
+
+    private fun setupScrollData() {
+        val nestedScrollView = findViewById<androidx.core.widget.NestedScrollView>(R.id.mainScrollView)
+        val searchBar = findViewById<View>(R.id.searchBar)
+        val bottomNav = findViewById<View>(R.id.bottomNavigationInclude)
+        
+        // Scroll State tracking
+        var isScrollingDown = false
+        
+        // Handler for idle detection
+        val scrollHandler = android.os.Handler(android.os.Looper.getMainLooper())
+        val scrollRunnable = Runnable {
+            // Scroll has stopped
+            if (!isScrollingDown) {
+                 // Resume carousel only if not scrolling
+                 if (::premiumCarouselManager.isInitialized) {
+                     premiumCarouselManager.startAutoScroll()
+                 }
+            }
+        }
+
+        nestedScrollView.setOnScrollChangeListener(androidx.core.widget.NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
+            val dy = scrollY - oldScrollY
+            
+            // 1. Carousel Sync & Animation
+            val carouselView = findViewById<View>(R.id.premium_carousel_include)
+            if (carouselView != null) {
+                // Calculate scale factor based on scroll position - shrinks as you scroll down
+                // Starts at 1.0, shrinks to 0.85 by 500 pixels of scroll
+                val maxScroll = 500f
+                val scale = (1.0f - (0.15f * (scrollY.toFloat() / maxScroll).coerceIn(0f, 1f)))
+                
+                carouselView.animate()
+                    .scaleX(scale)
+                    .scaleY(scale)
+                    .alpha(if(scrollY > 600) 0.1f else 1f) // Fade out slightly if scrolled far
+                    .setDuration(0) // Instant update for scroll loop
+                    .start()
+            }
+
+            if (::premiumCarouselManager.isInitialized) {
+                premiumCarouselManager.stopAutoScroll()
+                scrollHandler.removeCallbacks(scrollRunnable)
+                scrollHandler.postDelayed(scrollRunnable, 1000) // Resume after 1s of idle
+            }
+
+            // 2. Animations (Search Bar & Footer)
+            if (dy > 10) { 
+                // Scrolling DOWN -> Hide Header & Footer
+                if (!isScrollingDown) {
+                    isScrollingDown = true
+                    animateViews(searchBar, bottomNav, false)
+                }
+            } else if (dy < -10) {
+                // Scrolling UP -> Show Header & Footer
+                if (isScrollingDown) {
+                    isScrollingDown = false
+                    animateViews(searchBar, bottomNav, true)
+                }
+            }
+        })
+    }
+
+    private fun animateViews(searchBar: View, bottomNav: View, show: Boolean) {
+        val searchY = if (show) 0f else -searchBar.height.toFloat() * 1.5f
+        val bottomY = if (show) 0f else bottomNav.height.toFloat()
+        val alpha = if (show) 1f else 0f
+        val duration = 300L
+
+        searchBar.animate()
+            .translationY(searchY)
+            .alpha(alpha)
+            .setDuration(duration)
+            .setInterpolator(android.view.animation.DecelerateInterpolator())
+            .start()
+
+        bottomNav.animate()
+            .translationY(bottomY)
+            .setDuration(duration)
+            .setInterpolator(android.view.animation.DecelerateInterpolator())
+            .start()
     }
 
     private fun Share() {
@@ -176,8 +274,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(browserIntent)
         }
     }
-
-
+    
     private fun highlightMenuItem(activeId: Int) {
         val navItems = listOf(R.id.nav_home, R.id.nav_fav, R.id.nav_arcade)
         for (id in navItems) {
@@ -229,6 +326,7 @@ class MainActivity : AppCompatActivity() {
             when (menuItem.itemId) {
                 R.id.nav_profile -> startActivity(Intent(this, LoginActivity::class.java))
                 R.id.nav_settings -> startActivity(Intent(this, SettingsActivity::class.java))
+                R.id.more_about_us -> startActivity(Intent(this, PremiumCarouselActivity::class.java))
                 R.id.nav_logout -> finish()
             }
             drawerLayout.closeDrawer(GravityCompat.START)
@@ -237,27 +335,71 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupCarousel() {
-        val carousel: ImageCarousel = findViewById(R.id.carousel)
-        carousel.registerLifecycle(lifecycle)
-
-        val list = mutableListOf<CarouselItem>()
-        list.add(CarouselItem(imageDrawable = R.drawable.tower_crash, caption = "Tower Crash 3D"))
-        list.add(CarouselItem(imageDrawable = R.drawable.ludum_dare, caption = "Ludum Dare 28"))
-        list.add(CarouselItem(imageDrawable = R.drawable.zoo_boom, caption = "Zoo Boom"))
-        list.add(CarouselItem(imageDrawable = R.drawable.sudoku, caption = "Sudoku"))
-        list.add(CarouselItem(imageDrawable = R.drawable.words_of_wonders, caption = "Jammu Flight"))
-
-        carousel.setData(list)
-        carousel.carouselListener = object : CarouselListener {
-            override fun onClick(position: Int, carouselItem: CarouselItem) {
-                val urls = listOf(
-                    "",
-                    "https://play.famobi.com/wrapper/tower-crash-3d/A1000-10",
-                    "https://antila.github.io/ludum-dare-28/",
-                    "https://appslabs.store/games/zoo-boom/wrapper/zoo-boom/A1000-10.html",
-                    ""
-                )
-                openGame(urls[position])
+        // Initialize premium carousel manager
+        premiumCarouselManager = PremiumCarouselManager(this, lifecycle)
+        
+        // Get views from included layout
+        val carouselInclude = findViewById<View>(R.id.premium_carousel_include)
+        val viewPager = carouselInclude.findViewById<ViewPager2>(R.id.premium_carousel_viewpager)
+        // Indicator removed as per request
+        val indicatorContainer: LinearLayout? = null
+        
+        // Create carousel items from existing games
+        val carouselItems = listOf(
+            PremiumCarouselItem(
+                id = "1",
+                title = "Tower Crash 3D",
+                subtitle = "Puzzle • Strategy",
+                category = "FEATURED",
+                imageRes = R.drawable.tower_crash,
+                url = "https://play.famobi.com/wrapper/tower-crash-3d/A1000-10",
+                isFeatured = true
+            ),
+            PremiumCarouselItem(
+                id = "2",
+                title = "Ludum Dare 28",
+                subtitle = "Action • Indie",
+                category = "NEW",
+                imageRes = R.drawable.ludum_dare,
+                url = "https://antila.github.io/ludum-dare-28/"
+            ),
+            PremiumCarouselItem(
+                id = "3",
+                title = "Zoo Boom",
+                subtitle = "Puzzle • Match-3",
+                category = "POPULAR",
+                imageRes = R.drawable.zoo_boom,
+                url = "https://appslabs.store/games/zoo-boom/wrapper/zoo-boom/A1000-10.html"
+            ),
+            PremiumCarouselItem(
+                id = "4",
+                title = "Sudoku",
+                subtitle = "Puzzle • Brain",
+                category = "CLASSIC",
+                imageRes = R.drawable.sudoku,
+                url = "https://appslabs.store/games/sudoku/"
+            ),
+            PremiumCarouselItem(
+                id = "5",
+                title = "Jammu Flight",
+                subtitle = "Adventure • Flying",
+                category = "TRENDING",
+                imageRes = R.drawable.words_of_wonders,
+                url = "file:///android_asset/JammuFlight.html"
+            )
+        )
+        
+        // Initialize carousel
+        premiumCarouselManager.initialize(
+            viewPager = viewPager,
+            indicatorContainer = indicatorContainer,
+            items = carouselItems
+        ) { item ->
+            // Handle carousel item click
+            if (item.url.isNotEmpty()) {
+                openGame(item.url)
+            } else {
+                Toast.makeText(this, "${item.title} - Coming Soon!", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -326,6 +468,45 @@ class MainActivity : AppCompatActivity() {
             override fun afterTextChanged(s: Editable?) {}
         })
     }
+
+    private fun loadRewardedAd() {
+        val adRequest = AdRequest.Builder().build()
+        RewardedAd.load(this, "ca-app-pub-3940256099942544/5224354917", // Test ID
+            adRequest, object : RewardedAdLoadCallback() {
+                override fun onAdFailedToLoad(adError: LoadAdError) {
+                    rewardedAd = null
+                }
+
+                override fun onAdLoaded(ad: RewardedAd) {
+                    rewardedAd = ad
+                }
+            })
+    }
+
+    private fun showRewardedAd(onRewarded: () -> Unit) {
+        if (rewardedAd != null) {
+            rewardedAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
+                override fun onAdDismissedFullScreenContent() {
+                    loadRewardedAd()
+                }
+
+                override fun onAdFailedToShowFullScreenContent(adError: AdError) {
+                    Toast.makeText(this@MainActivity, "Ad failed to show.", Toast.LENGTH_SHORT).show()
+                }
+
+                override fun onAdShowedFullScreenContent() {
+                    rewardedAd = null
+                }
+            }
+            rewardedAd?.show(this) {
+                onRewarded()
+            }
+        } else {
+            Toast.makeText(this, "The rewarded ad wasn't ready yet.", Toast.LENGTH_SHORT).show()
+            loadRewardedAd()
+        }
+    }
+
 
     private fun performSearch(query: String) {
         if (query.isEmpty()) {

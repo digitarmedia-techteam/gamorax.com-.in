@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">gamorax</string>
     <string name="game_icon">Game Icon</string>
+    <string name="carousel_item_desc">Carousel Item</string>
 </resources>

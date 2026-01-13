@@ -40,6 +40,10 @@
             android:name=".SettingsActivity"
             android:exported="false"
             android:theme="@style/Theme.Gamorax" />
+        <activity
+            android:name=".PremiumCarouselActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Gamorax" />
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
