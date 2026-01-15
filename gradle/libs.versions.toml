@@ -6,13 +6,14 @@ junit = "4.13.2"
 junitVersion = "1.3.0"
 espressoCore = "3.7.0"
 appcompat = "1.7.1"
-material = "1.13.0"
+material = "1.12.0"
 activity = "1.12.2"
 constraintlayout = "2.2.1"
 googleGmsGoogleServices = "4.4.4"
 firebaseDatabase = "22.0.1"
 gson = "2.12.1"
 imageCarousel = "2.1.0"
+glide = "4.16.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -26,6 +27,8 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 firebase-database = { group = "com.google.firebase", name = "firebase-database", version.ref = "firebaseDatabase" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 imagecarousel = { group = "org.imaginativeworld.whynotimagecarousel", name = "whynotimagecarousel", version.ref = "imageCarousel" }
+glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
+glide-compiler = { group = "com.github.bumptech.glide", name = "compiler", version.ref = "glide" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

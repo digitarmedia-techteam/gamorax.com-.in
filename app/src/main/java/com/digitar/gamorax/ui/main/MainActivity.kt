@@ -58,6 +58,8 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.google.android.material.navigation.NavigationView
+import com.bumptech.glide.Glide
+import com.digitar.gamorax.ui.profile.profile
 
 class MainActivity : AppCompatActivity() {
     private lateinit var adView: AdView
@@ -367,13 +369,15 @@ class MainActivity : AppCompatActivity() {
     private fun initDrawer() {
         drawerLayout = findViewById(R.id.drawerLayout)
         val navigationView = findViewById<NavigationView>(R.id.navigationView)
-        findViewById<ImageView>(R.id.menuButton).setOnClickListener {
+        val menuButton = findViewById<ImageView>(R.id.menuButton)
+        Glide.with(this).load(R.drawable.user_gif).into(menuButton)
+        menuButton.setOnClickListener {
             drawerLayout.openDrawer(GravityCompat.START)
         }
 
         navigationView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.nav_profile -> startActivity(Intent(this, LoginActivity::class.java))
+                R.id.nav_profile -> startActivity(Intent(this, profile::class.java))
                 R.id.nav_settings -> startActivity(Intent(this, SettingsActivity::class.java))
                 R.id.more_about_us -> startActivity(
                     Intent(
@@ -626,7 +630,7 @@ class MainActivity : AppCompatActivity() {
     private fun openAffiliateThenGame(gameUrl: String) {
         val intent = Intent(this, WebViewActivity::class.java).apply {
 //            putExtra("EXTRA_URL", "https://track.digitarmedia.com/c?o=1370&a=1011")
-            putExtra("NEXT_URL", gameUrl)
+            putExtra("EXTRA_URL", gameUrl)
         }
         startActivity(intent)
     }

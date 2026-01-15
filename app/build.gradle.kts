@@ -51,6 +51,8 @@ dependencies {
     implementation(libs.imagecarousel)
     implementation("androidx.fragment:fragment-ktx:1.8.9")
     implementation("androidx.lifecycle:lifecycle-process:2.10.0")
+    implementation(libs.glide)
+    annotationProcessor(libs.glide.compiler)
 
     // Google Mobile Ads
     implementation("com.google.android.gms:play-services-ads:24.9.0")
@@ -63,6 +65,7 @@ dependencies {
 
     // Firebase Remote Config
     implementation("com.google.firebase:firebase-config-ktx:22.1.2")
+    implementation ("com.github.bumptech.glide:glide:5.0.5")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

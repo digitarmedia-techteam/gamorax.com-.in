@@ -29,4 +29,13 @@
     <color name="admob_background">#F1F3F4</color>
     <color name="game_background">#FFFFFF</color>
     <color name="game_ui_text">#202124</color>
+
+    <!-- Premium Profile Design Tokens -->
+    <color name="premium_bg_dark">#0A0F0D</color>
+    <color name="premium_neon_green">#39FF14</color>
+    <color name="premium_glass_bg">#1AFFFFFF</color>
+    <color name="premium_glass_stroke">#33FFFFFF</color>
+    <color name="premium_mana_blue">#00D4FF</color>
+    <color name="premium_power_red">#FF4B2B</color>
+    <color name="premium_text_secondary">#B0B3B8</color>
 </resources>
