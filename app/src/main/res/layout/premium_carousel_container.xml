@@ -21,6 +21,4 @@
         android:clipChildren="false"
         android:clipToPadding="false" />
 
-
-
 </FrameLayout>

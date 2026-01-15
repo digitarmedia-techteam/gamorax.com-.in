@@ -1,53 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bottomNavContainer"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
-    android:background="@color/bg_card">
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_glass_bottom_nav"
+    android:orientation="horizontal"
+    android:paddingHorizontal="16dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="10dp"
+    android:weightSum="3"
+    android:elevation="8dp">
 
+    <!-- Home Item -->
     <LinearLayout
         android:id="@+id/nav_home"
-        style="@style/NavButton">
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:clickable="true"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:focusable="true">
+
         <ImageView
             android:id="@+id/iv_home"
-            style="@style/NavIcon"
-            android:src="@drawable/ic_home" />
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_home"
+            android:contentDescription="Home"
+            android:layout_marginBottom="4dp" />
+
         <TextView
             android:id="@+id/tv_home"
-            style="@style/NavText"
-            android:text="Home" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Home"
+            android:textSize="12sp"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="@color/text_secondary" />
     </LinearLayout>
 
+    <!-- Favorites Item -->
     <LinearLayout
         android:id="@+id/nav_fav"
-        style="@style/NavButton">
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:clickable="true"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:focusable="true">
+
         <ImageView
             android:id="@+id/iv_fav"
-            style="@style/NavIcon"
-            android:src="@drawable/ic_favorite" />
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_favorite"
+            android:contentDescription="Favorites"
+            android:layout_marginBottom="4dp" />
+
         <TextView
             android:id="@+id/tv_fav"
-            style="@style/NavText"
-            android:text="Favorite" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Favorites"
+            android:textSize="12sp"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="@color/text_secondary" />
     </LinearLayout>
 
+    <!-- Share Item -->
     <LinearLayout
         android:id="@+id/nav_arcade"
-        style="@style/NavButton">
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:clickable="true"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:focusable="true">
+
         <ImageView
             android:id="@+id/iv_arcade"
-            style="@style/NavIcon"
-            android:src="@drawable/share" />
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/share"
+            android:contentDescription="Share"
+            android:layout_marginBottom="4dp"/>
+
         <TextView
             android:id="@+id/tv_arcade"
-            style="@style/NavText"
-            android:text="Share" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Share"
+            android:textSize="12sp"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="@color/text_secondary" />
     </LinearLayout>
 
-    <androidx.constraintlayout.helper.widget.Flow
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:constraint_referenced_ids="nav_home,nav_fav,nav_arcade"
-        app:flow_wrapMode="aligned" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

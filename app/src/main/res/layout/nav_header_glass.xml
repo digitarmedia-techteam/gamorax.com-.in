@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="180dp"
+    android:padding="24dp">
+
+    <!-- Avatar -->
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/navHeaderAvatar"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:background="@drawable/bg_pill_tab"
+        android:backgroundTint="@color/premium_neon_green"
+        android:padding="2dp"
+        android:src="@drawable/user_gif"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.3"
+        app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
+        app:strokeColor="@color/premium_neon_green"
+        app:strokeWidth="2dp" />
+
+    <!-- User Info -->
+    <TextView
+        android:id="@+id/navHeaderName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="Gamorax Player"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/navHeaderAvatar" />
+
+    <TextView
+        android:id="@+id/navHeaderEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="player@gamorax.com"
+        android:textColor="#B3FFFFFF"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/navHeaderName" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

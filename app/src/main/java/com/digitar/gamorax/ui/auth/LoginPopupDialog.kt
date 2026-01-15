@@ -12,6 +12,7 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.DialogFragment
 import com.digitar.gamorax.R
 import com.digitar.gamorax.ui.auth.LoginActivity
+import org.chromium.base.Log
 
 class LoginPopupDialog : DialogFragment() {
 
@@ -38,7 +39,7 @@ class LoginPopupDialog : DialogFragment() {
         }
 
         view.findViewById<AppCompatButton>(R.id.btnGuest).setOnClickListener {
-            dismiss()
+            handleGuestLogin()
         }
 
         view.findViewById<TextView>(R.id.txtEmailLogin).setOnClickListener {
@@ -54,6 +55,43 @@ class LoginPopupDialog : DialogFragment() {
 
 
         // Add other click listeners for Google/Apple if needed
+    }
+    
+    private fun handleGuestLogin() {
+        val guestAuthManager = com.digitar.gamorax.data.auth.GuestAuthManager(requireContext())
+        
+        // Show loading (optional - you can add a ProgressBar)
+        view?.findViewById<AppCompatButton>(R.id.btnGuest)?.apply {
+            isEnabled = false
+            text = "Signing in..."
+        }
+        
+        guestAuthManager.signInAsGuest(
+            onSuccess = { user ->
+                // Success - dismiss dialog and continue to app
+                android.widget.Toast.makeText(
+                    requireContext(),
+                    "Welcome, ${user.username}!",
+                    android.widget.Toast.LENGTH_SHORT
+                ).show()
+                dismiss()
+            },
+            onFailure = { exception ->
+                Log.e("LOGIN_ERROR", "Failed to sign in", exception)
+                // Error handling
+                android.widget.Toast.makeText(
+                    requireContext(),
+                    "Failed to sign in: ${exception.message}",
+                    android.widget.Toast.LENGTH_SHORT
+                ).show()
+                
+                // Re-enable button
+                view?.findViewById<AppCompatButton>(R.id.btnGuest)?.apply {
+                    isEnabled = true
+                    text = "Continue as Guest"
+                }
+            }
+        )
     }
 
     // onStart() is no longer needed as styling is handled by the theme

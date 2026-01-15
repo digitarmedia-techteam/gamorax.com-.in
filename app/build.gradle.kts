@@ -52,6 +52,7 @@ dependencies {
     implementation("androidx.fragment:fragment-ktx:1.8.9")
     implementation("androidx.lifecycle:lifecycle-process:2.10.0")
     implementation(libs.glide)
+    implementation(libs.cronet.embedded)
     annotationProcessor(libs.glide.compiler)
 
     // Google Mobile Ads
@@ -65,6 +66,13 @@ dependencies {
 
     // Firebase Remote Config
     implementation("com.google.firebase:firebase-config-ktx:22.1.2")
+    
+    // Firebase Authentication (for Guest Login)
+    implementation("com.google.firebase:firebase-auth-ktx:23.2.1")
+    
+    // Firebase Firestore (for User Data Storage)
+    implementation("com.google.firebase:firebase-firestore-ktx:25.1.4")
+    
     implementation ("com.github.bumptech.glide:glide:5.0.5")
 
     testImplementation(libs.junit)

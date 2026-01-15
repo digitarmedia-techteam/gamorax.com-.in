@@ -7,223 +7,328 @@
     android:layout_height="match_parent"
     android:background="@drawable/bg_profile_gradient">
 
+    <!-- Toolbar (Custom Layout for precise control) -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@drawable/bg_toolbar_gradient"
+        android:paddingHorizontal="8dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:elevation="4dp">
+
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_back"
+            android:contentDescription="Back"
+            android:padding="12dp"
+            app:tint="#CCFFFFFF"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <TextView
+            android:id="@+id/tvToolbarTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Profile"
+            android:textColor="#CCFFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <ImageButton
+            android:id="@+id/btnLogout"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/exit"
+            android:padding="12dp"
+            app:layout_constraintEnd_toStartOf="@id/btnClose"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <ImageButton
+            android:id="@+id/btnClose"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_close"
+            android:contentDescription="Close"
+            android:padding="12dp"
+            app:tint="#CCFFFFFF"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <!-- Scrollable Content -->
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:clipToPadding="false"
-        android:paddingBottom="100dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:paddingBottom="40dp"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintBottom_toBottomOf="parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="24dp">
+            android:orientation="vertical"
+            android:padding="16dp">
 
-            <!-- Avatar Section -->
-            <View
-                android:id="@+id/avatarGlow"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:layout_marginTop="48dp"
-                android:background="@drawable/bg_pill_tab"
-                android:backgroundTint="@color/premium_neon_green"
-                android:alpha="0.5"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/ivProfileAvatar"
-                android:layout_width="110dp"
-                android:layout_height="110dp"
-                android:padding="4dp"
-                android:src="@drawable/profile_avatar_v2"
-                app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
-                app:strokeColor="@color/premium_neon_green"
-                app:strokeWidth="2dp"
-                app:layout_constraintBottom_toBottomOf="@id/avatarGlow"
-                app:layout_constraintEnd_toEndOf="@id/avatarGlow"
-                app:layout_constraintStart_toStartOf="@id/avatarGlow"
-                app:layout_constraintTop_toTopOf="@id/avatarGlow" />
-
-            <TextView
-                android:id="@+id/tvUsername"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:fontFamily="sans-serif-medium"
-                android:text="CyberNinja99"
-                android:textColor="@color/white"
-                android:textSize="24sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/avatarGlow" />
-
-            <TextView
-                android:id="@+id/tvLevel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:alpha="0.8"
-                android:text="Level 42"
-                android:textColor="@color/premium_neon_green"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvUsername" />
-
-            <ProgressBar
-                android:id="@+id/pbLevel"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="180dp"
-                android:layout_height="6dp"
-                android:layout_marginTop="8dp"
-                android:progress="75"
-                android:progressDrawable="@drawable/bg_pill_tab"
-                android:progressTint="@color/premium_neon_green"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvLevel" />
-            
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="7500 / 10000 XP"
-                android:textColor="@color/text_secondary"
-                android:textSize="10sp"
-                android:layout_marginTop="4dp"
-                app:layout_constraintTop_toBottomOf="@id/pbLevel"
-                app:layout_constraintStart_toStartOf="@id/pbLevel"
-                app:layout_constraintEnd_toEndOf="@id/pbLevel"/>
-
-
-            <!-- Stats Row -->
-            <LinearLayout
-                android:id="@+id/layoutStats"
+            <!-- Profile Header Card (Glassmorphism + Floating) -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardProfileHeader"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="32dp"
-                android:background="@drawable/bg_glass_card"
-                android:orientation="horizontal"
-                android:weightSum="4"
-                app:layout_constraintTop_toBottomOf="@id/pbLevel">
+                app:cardCornerRadius="32dp"
+                app:cardElevation="12dp"
+                app:cardBackgroundColor="@android:color/transparent"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="24dp">
 
-                <!-- Stat 1: Wins -->
-                <LinearLayout
-                    android:layout_width="0dp"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/innerProfileLayout"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="12dp">
+                    android:background="@drawable/bg_glass_header"
+                    android:paddingTop="32dp"
+                    android:paddingBottom="24dp"
+                    android:paddingHorizontal="20dp">
 
+                    <!-- Avatar Section -->
+                    <View
+                        android:id="@+id/avatarGlow"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:background="@drawable/bg_pill_tab"
+                        android:backgroundTint="@color/premium_neon_green"
+                        android:alpha="0.4"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/ivProfileAvatar"
+                        android:layout_width="104dp"
+                        android:layout_height="104dp"
+                        android:padding="4dp"
+                        android:src="@drawable/profile_avatar_v2"
+                        app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
+                        app:strokeColor="@color/premium_neon_green"
+                        app:strokeWidth="2dp"
+                        app:layout_constraintBottom_toBottomOf="@id/avatarGlow"
+                        app:layout_constraintEnd_toEndOf="@id/avatarGlow"
+                        app:layout_constraintStart_toStartOf="@id/avatarGlow"
+                        app:layout_constraintTop_toTopOf="@id/avatarGlow" />
+
+                    <View
+                        android:id="@+id/onlineBadge"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:background="@drawable/bg_online_badge"
+                        android:layout_marginEnd="6dp"
+                        android:layout_marginBottom="6dp"
+                        app:layout_constraintBottom_toBottomOf="@id/ivProfileAvatar"
+                        app:layout_constraintEnd_toEndOf="@id/ivProfileAvatar" />
+
+                    <!-- Text Info -->
                     <TextView
+                        android:id="@+id/tvUsername"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="245"
+                        android:layout_marginTop="16dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="CyberNinja99"
                         android:textColor="@color/white"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:textSize="22sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/avatarGlow" />
 
                     <TextView
+                        android:id="@+id/tvUserTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Wins"
-                        android:textColor="@color/premium_text_secondary"
-                        android:textSize="10sp" />
-                </LinearLayout>
+                        android:text="Elite Warrior"
+                        android:textColor="#99FFFFFF"
+                        android:textSize="13sp"
+                        android:layout_marginTop="2dp"
+                        app:layout_constraintTop_toBottomOf="@id/tvUsername"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"/>
 
-                <!-- Stat 2: Loss -->
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="12dp">
-
-
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <!-- Level Row -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/levelRow"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="42"
-                        android:textColor="@color/premium_power_red"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:layout_marginTop="20dp"
+                        app:layout_constraintTop_toBottomOf="@id/tvUserTitle">
+                        
+                        <TextView
+                            android:id="@+id/tvLevelLabel"
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:text="Level 42"
+                             android:textColor="@color/premium_neon_green"
+                             android:textStyle="bold"
+                             android:textSize="14sp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                        <TextView
+                            android:id="@+id/tvXpLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="7500 / 10000 XP"
+                            android:textColor="@color/premium_text_secondary"
+                            android:textSize="12sp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"/>
+
+                        <ProgressBar
+                            android:id="@+id/pbLevel"
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:layout_width="0dp"
+                            android:layout_height="6dp"
+                            android:progress="75"
+                            android:layout_marginStart="12dp"
+                            android:layout_marginEnd="12dp"
+                            android:progressDrawable="@drawable/bg_pill_tab"
+                            android:progressTint="@color/premium_neon_green"
+                            app:layout_constraintStart_toEndOf="@id/tvLevelLabel"
+                            app:layout_constraintEnd_toStartOf="@id/tvXpLabel"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"/>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <!-- Stats Row (Pill) -->
+                    <LinearLayout
+                        android:id="@+id/layoutStats"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Loss"
-                        android:textColor="@color/premium_text_secondary"
-                        android:textSize="10sp" />
-                </LinearLayout>
+                        android:layout_marginTop="24dp"
+                        android:background="@drawable/bg_stats_pill"
+                        android:orientation="horizontal"
+                        android:paddingVertical="12dp"
+                        android:weightSum="4"
+                        app:layout_constraintTop_toBottomOf="@id/levelRow">
 
-                <!-- Stat 3: Mana -->
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="12dp">
+                        <!-- Stat 1: Wins -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
 
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="245"
+                                android:textColor="@color/white"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="1.2k"
-                        android:textColor="@color/premium_mana_blue"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Wins"
+                                android:textColor="@color/premium_text_secondary"
+                                android:textSize="11sp" />
+                        </LinearLayout>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Mana"
-                        android:textColor="@color/premium_text_secondary"
-                        android:textSize="10sp" />
-                </LinearLayout>
+                        <!-- Stat 2: Loss -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
 
-                <!-- Stat 4: Power -->
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="12dp">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="42"
+                                android:textColor="@color/premium_power_red"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
 
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Loss"
+                                android:textColor="@color/premium_text_secondary"
+                                android:textSize="11sp" />
+                        </LinearLayout>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="950"
-                        android:textColor="@color/premium_neon_green"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                        <!-- Stat 3: Mana -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Power"
-                        android:textColor="@color/premium_text_secondary"
-                        android:textSize="10sp" />
-                </LinearLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="1.2k"
+                                android:textColor="@color/premium_mana_blue"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
 
-            </LinearLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Mana"
+                                android:textColor="@color/premium_text_secondary"
+                                android:textSize="11sp" />
+                        </LinearLayout>
+
+                        <!-- Stat 4: Power -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="950"
+                                android:textColor="@color/premium_neon_green"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Power"
+                                android:textColor="@color/premium_text_secondary"
+                                android:textSize="11sp" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
 
 
             <!-- Achievements Section -->
@@ -231,24 +336,20 @@
                 android:id="@+id/tvSectionTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="16dp"
                 android:text="Your Achievements"
                 android:textColor="@color/white"
                 android:textSize="20sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/layoutStats" />
+                android:textStyle="bold" />
 
             <HorizontalScrollView
                 android:id="@+id/scrollTabs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:paddingStart="16dp"
                 android:scrollbars="none"
-                android:clipToPadding="false"
-                app:layout_constraintTop_toBottomOf="@id/tvSectionTitle">
+                android:layout_marginBottom="16dp"
+                android:clipToPadding="false">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -304,245 +405,204 @@
             </HorizontalScrollView>
 
 
-            <!-- Achievement List (Mockup) -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:orientation="vertical"
-                app:layout_constraintTop_toBottomOf="@id/scrollTabs">
+            <!-- Achievement List Container (Card) -->
+            <androidx.cardview.widget.CardView
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 app:cardCornerRadius="24dp"
+                 app:cardBackgroundColor="@android:color/transparent"
+                 app:cardElevation="0dp">
 
-                <!-- Achievement Item 1 -->
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <LinearLayout
+                    android:id="@+id/achievementLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
-                    android:layout_marginBottom="12dp"
+                    android:orientation="vertical"
                     android:background="@drawable/bg_glass_card"
-                    android:padding="16dp">
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp">
 
-                    <ImageView
-                        android:id="@+id/imgAch1"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:src="@drawable/icon_stat_wins"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"/>
-
-                    <TextView
-                        android:id="@+id/tvAchTitle1"
-                        android:layout_width="0dp"
+                    <!-- Achievement Item 1 -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:text="First Blood"
-                        android:textColor="@color/white"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        app:layout_constraintEnd_toStartOf="@id/tvReward1"
-                        app:layout_constraintStart_toEndOf="@id/imgAch1"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        android:layout_marginHorizontal="12dp"
+                        android:layout_marginVertical="6dp"
+                        android:padding="12dp">
 
-                    <TextView
-                        android:layout_width="0dp"
+                        <ImageView
+                            android:id="@+id/imgAch1"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:src="@drawable/icon_stat_wins"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"/>
+
+                        <TextView
+                            android:id="@+id/tvAchTitle1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginEnd="8dp"
+                            android:text="First Blood"
+                            android:textColor="@color/white"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            app:layout_constraintEnd_toStartOf="@id/tvReward1"
+                            app:layout_constraintStart_toEndOf="@id/imgAch1"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="Win your first multiplayer match"
+                            android:textColor="@color/premium_text_secondary"
+                            android:textSize="12sp"
+                            app:layout_constraintEnd_toEndOf="@id/tvAchTitle1"
+                            app:layout_constraintStart_toStartOf="@id/tvAchTitle1"
+                            app:layout_constraintTop_toBottomOf="@id/tvAchTitle1" />
+
+                         <TextView
+                            android:id="@+id/tvReward1"
+                             android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="+100 XP"
+                            android:textColor="@color/premium_neon_green"
+                            android:textStyle="bold"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"/>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="12dp"
+                            android:background="#20FFFFFF"
+                            app:layout_constraintTop_toBottomOf="@id/imgAch1"/>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <!-- Achievement Item 2 (Locked) -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Win your first multiplayer match"
-                        android:textColor="@color/premium_text_secondary"
-                        android:textSize="12sp"
-                        app:layout_constraintEnd_toEndOf="@id/tvAchTitle1"
-                        app:layout_constraintStart_toStartOf="@id/tvAchTitle1"
-                        app:layout_constraintTop_toBottomOf="@id/tvAchTitle1" />
+                        android:layout_marginHorizontal="12dp"
+                        android:layout_marginVertical="6dp"
+                        android:alpha="0.5"
+                        android:padding="12dp">
 
-                     <TextView
-                        android:id="@+id/tvReward1"
-                         android:layout_width="wrap_content"
+                        <ImageView
+                            android:id="@+id/imgAch2"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:src="@drawable/icon_achievement_locked"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent" />
+
+                        <TextView
+                            android:id="@+id/tvAchTitle2"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginEnd="8dp"
+                            android:text="Unstoppable"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            app:layout_constraintEnd_toStartOf="@id/tvReward2"
+                            app:layout_constraintStart_toEndOf="@id/imgAch2"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="Win 10 matches in a row"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp"
+                            app:layout_constraintEnd_toEndOf="@id/tvAchTitle2"
+                            app:layout_constraintStart_toStartOf="@id/tvAchTitle2"
+                            app:layout_constraintTop_toBottomOf="@id/tvAchTitle2" />
+
+                         <ImageView
+                            android:id="@+id/tvReward2"
+                             android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/icon_achievement_locked"
+                             app:layout_constraintEnd_toEndOf="parent"
+                             app:layout_constraintTop_toTopOf="parent"
+                             app:layout_constraintBottom_toBottomOf="parent" />
+                        
+                          <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="12dp"
+                            android:background="#20FFFFFF"
+                            app:layout_constraintTop_toBottomOf="@id/imgAch2"/>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                    <!-- Achievement Item 3 -->
+                      <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="+100 XP"
-                        android:textColor="@color/premium_neon_green"
-                        android:textStyle="bold"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"/>
+                        android:layout_marginHorizontal="12dp"
+                        android:layout_marginVertical="6dp"
+                        android:padding="12dp">
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                        <ImageView
+                            android:id="@+id/imgAch3"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:src="@drawable/icon_stat_power"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"/>
 
-                <!-- Achievement Item 2 (Locked) -->
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
-                    android:layout_marginBottom="12dp"
-                    android:background="@drawable/bg_glass_card"
-                    android:alpha="0.7"
-                    android:padding="16dp">
+                        <TextView
+                            android:id="@+id/tvAchTitle3"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginEnd="8dp"
+                            android:text="Power Overwhelming"
+                            android:textColor="@color/white"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            app:layout_constraintEnd_toStartOf="@id/tvReward3"
+                            app:layout_constraintStart_toEndOf="@id/imgAch3"
+                            app:layout_constraintTop_toTopOf="parent" />
 
-                    <ImageView
-                        android:id="@+id/imgAch2"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:src="@drawable/icon_achievement_locked"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent" />
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="Reach 1000 Power stats"
+                            android:textColor="@color/premium_text_secondary"
+                            android:textSize="12sp"
+                            app:layout_constraintEnd_toEndOf="@id/tvAchTitle3"
+                            app:layout_constraintStart_toStartOf="@id/tvAchTitle3"
+                            app:layout_constraintTop_toBottomOf="@id/tvAchTitle3" />
 
-                    <TextView
-                        android:id="@+id/tvAchTitle2"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:text="Unstoppable"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        app:layout_constraintEnd_toStartOf="@id/tvReward2"
-                        app:layout_constraintStart_toEndOf="@id/imgAch2"
-                        app:layout_constraintTop_toTopOf="parent" />
+                         <TextView
+                            android:id="@+id/tvReward3"
+                             android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Badge"
+                            android:textColor="@color/premium_power_red"
+                            android:textStyle="bold"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"/>
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:text="Win 10 matches in a row"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="12sp"
-                        app:layout_constraintEnd_toEndOf="@id/tvAchTitle2"
-                        app:layout_constraintStart_toStartOf="@id/tvAchTitle2"
-                        app:layout_constraintTop_toBottomOf="@id/tvAchTitle2" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
-                     <ImageView
-                        android:id="@+id/tvReward2"
-                         android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/icon_achievement_locked"
-                         app:layout_constraintEnd_toEndOf="parent"
-                         app:layout_constraintTop_toTopOf="parent"
-                         app:layout_constraintBottom_toBottomOf="parent" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-                <!-- Achievement Item 3 -->
-                  <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
-                    android:layout_marginBottom="12dp"
-                    android:background="@drawable/bg_glass_card"
-                    android:padding="16dp">
-
-                    <ImageView
-                        android:id="@+id/imgAch3"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:src="@drawable/icon_stat_power"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"/>
-
-                    <TextView
-                        android:id="@+id/tvAchTitle3"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:text="Power Overwhelming"
-                        android:textColor="@color/white"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        app:layout_constraintEnd_toStartOf="@id/tvReward3"
-                        app:layout_constraintStart_toEndOf="@id/imgAch3"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:text="Reach 1000 Power stats"
-                        android:textColor="@color/premium_text_secondary"
-                        android:textSize="12sp"
-                        app:layout_constraintEnd_toEndOf="@id/tvAchTitle3"
-                        app:layout_constraintStart_toStartOf="@id/tvAchTitle3"
-                        app:layout_constraintTop_toBottomOf="@id/tvAchTitle3" />
-
-                     <TextView
-                        android:id="@+id/tvReward3"
-                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Badge"
-                        android:textColor="@color/premium_power_red"
-                        android:textStyle="bold"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"/>
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-            </LinearLayout>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
-
-    <!-- Bottom Navigation Bar (Glassmorphism) -->
-<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="80dp"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent">-->
-
-<!--        <View-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:background="@drawable/bg_glass_card"-->
-<!--            android:alpha="0.9"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"/>-->
-<!--        -->
-<!--        &lt;!&ndash; Center Floating Action Button &ndash;&gt;-->
-<!--         <View-->
-<!--            android:id="@+id/fabGlow"-->
-<!--            android:layout_width="64dp"-->
-<!--            android:layout_height="64dp"-->
-<!--            android:background="@drawable/bg_pill_tab"-->
-<!--            android:backgroundTint="@color/premium_neon_green"-->
-<!--            android:layout_marginBottom="32dp"-->
-<!--            android:alpha="0.3"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"/>-->
-
-<!--        <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--             android:layout_marginBottom="32dp"-->
-<!--            app:backgroundTint="@color/premium_neon_green"-->
-<!--            android:src="@drawable/ic_search" -->
-<!--            app:tint="@color/black"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:elevation="10dp"/>-->
-<!--            -->
-<!--        &lt;!&ndash; Nav Items &ndash;&gt;-->
-<!--        <ImageView-->
-<!--            android:layout_width="28dp"-->
-<!--            android:layout_height="28dp"-->
-<!--             android:layout_marginStart="48dp"-->
-<!--            android:src="@drawable/ic_home"-->
-<!--            app:tint="@color/white"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent"/>-->
-
-<!--         <ImageView-->
-<!--            android:layout_width="28dp"-->
-<!--            android:layout_height="28dp"-->
-<!--             android:layout_marginEnd="48dp"-->
-<!--            android:src="@drawable/ic_menu"-->
-<!--            app:tint="@color/white"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent"/>-->
-
-
-<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

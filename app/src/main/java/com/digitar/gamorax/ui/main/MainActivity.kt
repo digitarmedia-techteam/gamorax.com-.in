@@ -2,6 +2,7 @@ package com.digitar.gamorax.ui.main
 
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.graphics.Color
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
@@ -93,10 +94,20 @@ class MainActivity : AppCompatActivity() {
 //        enableEdgeToEdge()
         setContentView(R.layout.activity_main)
 
-        val rootLayout = findViewById<View>(R.id.drawerLayout)
-        ViewCompat.setOnApplyWindowInsetsListener(rootLayout) { v, insets ->
+        // Handle WindowInsets for bottom navigation
+        val bottomNavInclude = findViewById<View>(R.id.bottomNavigationInclude)
+        ViewCompat.setOnApplyWindowInsetsListener(bottomNavInclude) { view, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(0, 0, 0, systemBars.bottom)
+            
+            // Apply bottom padding to the actual LinearLayout container inside the include
+            val bottomNavContainer = view.findViewById<View>(R.id.bottomNavContainer)
+            bottomNavContainer?.setPadding(
+                bottomNavContainer.paddingLeft,
+                bottomNavContainer.paddingTop,
+                bottomNavContainer.paddingRight,
+                12.dpToPx() + systemBars.bottom // Original padding + system bar height
+            )
+            
             insets
         }
 
@@ -127,8 +138,17 @@ class MainActivity : AppCompatActivity() {
 
         highlightMenuItem(R.id.nav_home)
 
-        // Show Login Popup on start
-        showLoginPopup()
+        // Show Login Popup only if user is not logged in
+        checkAndShowLoginPopup()
+    }
+
+    private fun checkAndShowLoginPopup() {
+        val guestAuthManager = com.digitar.gamorax.data.auth.GuestAuthManager(this)
+        
+        // Only show login popup if no user is logged in
+        if (!guestAuthManager.isUserLoggedIn()) {
+            showLoginPopup()
+        }
     }
 
     private fun showLoginPopup() {
@@ -269,6 +289,14 @@ class MainActivity : AppCompatActivity() {
         val alpha = if (show) 1f else 0f
         val duration = 300L
 
+        // Clear focus and hide keyboard when hiding search bar
+        if (!show && searchBar is EditText) {
+            searchBar.clearFocus()
+            searchBar.isFocusableInTouchMode = false
+            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(searchBar.windowToken, 0)
+        }
+
         searchBar.animate()
             .translationY(searchY)
             .alpha(alpha)
@@ -328,7 +356,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun highlightMenuItem(activeId: Int) {
         val navItems = listOf(R.id.nav_home, R.id.nav_fav, R.id.nav_arcade)
+        val context = this
+        
         for (id in navItems) {
+            val container = findViewById<View>(id)
             val icon = when (id) {
                 R.id.nav_home -> findViewById<ImageView>(R.id.iv_home)
                 R.id.nav_fav -> findViewById<ImageView>(R.id.iv_fav)
@@ -341,11 +372,23 @@ class MainActivity : AppCompatActivity() {
             }
 
             if (id == activeId) {
-                icon?.setColorFilter(ContextCompat.getColor(this, R.color.accent_orange))
-                text?.setTextColor(ContextCompat.getColor(this, R.color.accent_orange))
+                // Active State: Neon Green, Scale Up
+                val activeColor = ContextCompat.getColor(context, R.color.premium_neon_green)
+                icon?.setColorFilter(activeColor)
+                text?.setTextColor(activeColor)
+                
+                // Animate Scale Up
+                icon?.animate()?.scaleX(1.2f)?.scaleY(1.2f)?.setDuration(200)?.start()
+                text?.animate()?.alpha(1f)?.setDuration(200)?.start()
             } else {
-                icon?.setColorFilter(ContextCompat.getColor(this, R.color.text_secondary))
-                text?.setTextColor(ContextCompat.getColor(this, R.color.text_secondary))
+                // Inactive State: Gray, Normal Scale
+                val inactiveColor = ContextCompat.getColor(context, R.color.text_secondary)
+                icon?.setColorFilter(inactiveColor)
+                text?.setTextColor(inactiveColor)
+                
+                // Animate Scale Down
+                icon?.animate()?.scaleX(1.0f)?.scaleY(1.0f)?.setDuration(200)?.start()
+                text?.animate()?.alpha(0.7f)?.setDuration(200)?.start()
             }
         }
     }
@@ -386,11 +429,31 @@ class MainActivity : AppCompatActivity() {
                     )
                 )
 
-                R.id.nav_logout -> finish()
+                R.id.nav_logout -> handleLogout()
             }
             drawerLayout.closeDrawer(GravityCompat.START)
             true
         }
+    }
+    
+    private fun handleLogout() {
+        // Show confirmation dialog
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("Logout")
+            .setMessage("Are you sure you want to logout?")
+            .setPositiveButton("Yes") { _, _ ->
+                // Perform logout
+                val guestAuthManager = com.digitar.gamorax.data.auth.GuestAuthManager(this)
+                guestAuthManager.signOut()
+                
+                // Show success message
+                Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show()
+                
+                // Show login popup again
+                showLoginPopup()
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 
     private fun setupCarousel() {
@@ -473,6 +536,19 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupSearch() {
         val searchBar = findViewById<EditText>(R.id.searchBar)
+        
+        // Prevent auto-focus on activity start
+        searchBar.clearFocus()
+        searchBar.isFocusableInTouchMode = false
+        
+        // Enable focus only on explicit click
+        searchBar.setOnClickListener {
+            searchBar.isFocusableInTouchMode = true
+            searchBar.requestFocus()
+            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.showSoftInput(searchBar, InputMethodManager.SHOW_IMPLICIT)
+        }
+        
         searchBar.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -481,6 +557,15 @@ class MainActivity : AppCompatActivity() {
 
             override fun afterTextChanged(s: Editable?) {}
         })
+        
+        // Clear focus when user presses back on keyboard
+        searchBar.setOnEditorActionListener { _, _, _ ->
+            searchBar.clearFocus()
+            searchBar.isFocusableInTouchMode = false
+            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(searchBar.windowToken, 0)
+            false
+        }
     }
 
     private fun loadRewardedAd() {
@@ -683,5 +768,10 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         if (::categoryAdapter.isInitialized) categoryAdapter.notifyDataSetChanged()
         highlightMenuItem(R.id.nav_home)
+    }
+    
+    // Extension function to convert dp to pixels
+    private fun Int.dpToPx(): Int {
+        return (this * resources.displayMetrics.density).toInt()
     }
 }
