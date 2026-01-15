@@ -1,4 +1,5 @@
-package com.digitar.gamorax.authorization
+package com.digitar.gamorax.ui.auth
+
 
 import android.animation.AnimatorInflater
 import android.animation.ObjectAnimator
@@ -9,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.commit
 import com.digitar.gamorax.R
+import com.digitar.gamorax.authorization.SignupFragment
 
 class LoginActivity : AppCompatActivity() {
 

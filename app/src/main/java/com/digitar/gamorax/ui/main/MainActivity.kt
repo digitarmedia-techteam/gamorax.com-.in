@@ -1,6 +1,5 @@
-package com.digitar.gamorax
+package com.digitar.gamorax.ui.main
 
-import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.graphics.Rect
@@ -14,6 +13,7 @@ import android.util.DisplayMetrics
 import android.view.Display
 import android.view.MotionEvent
 import android.view.View
+import android.view.animation.DecelerateInterpolator
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.FrameLayout
@@ -28,28 +28,36 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.widget.NestedScrollView
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import com.digitar.gamorax.ads.AdManager
-import com.google.android.gms.ads.interstitial.InterstitialAd
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
-import com.google.android.gms.ads.FullScreenContentCallback
-import com.google.android.gms.ads.LoadAdError
-import com.google.android.gms.ads.AdError
-
+import com.digitar.gamorax.R
 import com.digitar.gamorax.authorization.LoginPopupDialog
-import com.digitar.gamorax.authorization.LoginActivity
+import com.digitar.gamorax.core.ads.AdManager
+import com.digitar.gamorax.data.FavoritesManager
+import com.digitar.gamorax.data.model.CategoryModel
+import com.digitar.gamorax.data.model.GameModel
+import com.digitar.gamorax.data.repository.GameRepository
+import com.digitar.gamorax.ui.auth.LoginActivity
+import com.digitar.gamorax.ui.carousel.PremiumCarouselActivity
+import com.digitar.gamorax.ui.carousel.PremiumCarouselItem
+import com.digitar.gamorax.ui.carousel.PremiumCarouselManager
+import com.digitar.gamorax.ui.game.WebViewActivity
+import com.digitar.gamorax.ui.notification.NotificationActivity
+import com.digitar.gamorax.ui.settings.SettingsActivity
+import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.FullScreenContentCallback
+import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.google.android.material.navigation.NavigationView
-import org.imaginativeworld.whynotimagecarousel.ImageCarousel
-import org.imaginativeworld.whynotimagecarousel.listener.CarouselListener
-import org.imaginativeworld.whynotimagecarousel.model.CarouselItem
 
 class MainActivity : AppCompatActivity() {
     private lateinit var adView: AdView
@@ -107,7 +115,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<ImageView>(R.id.notificationButton).setOnClickListener {
-            val intent = Intent(this, notification::class.java)
+            val intent = Intent(this, NotificationActivity::class.java)
             startActivity(intent)
         }
 
@@ -152,7 +160,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupScrollData() {
         val nestedScrollView =
-            findViewById<androidx.core.widget.NestedScrollView>(R.id.mainScrollView)
+            findViewById<NestedScrollView>(R.id.mainScrollView)
         val searchBar = findViewById<View>(R.id.searchBar)
         val bottomNav = findViewById<View>(R.id.bottomNavigationInclude)
 
@@ -160,7 +168,7 @@ class MainActivity : AppCompatActivity() {
         var isScrollingDown = false
 
         // Handler for idle detection
-        val scrollHandler = android.os.Handler(android.os.Looper.getMainLooper())
+        val scrollHandler = Handler(Looper.getMainLooper())
         val scrollRunnable = Runnable {
             // Scroll has stopped
             if (!isScrollingDown) {
@@ -171,7 +179,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        nestedScrollView.setOnScrollChangeListener(androidx.core.widget.NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
+        nestedScrollView.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
             val dy = scrollY - oldScrollY
 
             // 1. Carousel Sync & Animation
@@ -263,13 +271,13 @@ class MainActivity : AppCompatActivity() {
             .translationY(searchY)
             .alpha(alpha)
             .setDuration(duration)
-            .setInterpolator(android.view.animation.DecelerateInterpolator())
+            .setInterpolator(DecelerateInterpolator())
             .start()
 
         bottomNav.animate()
             .translationY(bottomY)
             .setDuration(duration)
-            .setInterpolator(android.view.animation.DecelerateInterpolator())
+            .setInterpolator(DecelerateInterpolator())
             .start()
     }
 
@@ -348,7 +356,7 @@ class MainActivity : AppCompatActivity() {
                 v.getGlobalVisibleRect(outRect)
                 if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
                     v.clearFocus()
-                    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.hideSoftInputFromWindow(v.windowToken, 0)
                 }
             }
@@ -452,54 +460,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun prepareData() {
-        allGamesList = listOf(
-            GameModel(
-                "Tower Crash",
-                R.drawable.tower_crash,
-                "https://play.famobi.com/wrapper/tower-crash-3d/A1000-10"
-            ),
-            GameModel(
-                "Ludum Dare",
-                R.drawable.ludum_dare,
-                "https://antila.github.io/ludum-dare-28/"
-            ),
-            GameModel(
-                "Zoo Boom",
-                R.drawable.zoo_boom,
-                "https://appslabs.store/games/zoo-boom/wrapper/zoo-boom/A1000-10.html"
-            ),
-            GameModel("Sudoku", R.drawable.sudoku, "https://appslabs.store/games/sudoku/"),
-            GameModel(
-                "Jammu Flight",
-                R.drawable.words_of_wonders,
-                "https://www.google.com/"
-            ),
-            GameModel(
-                "Quiz Master",
-                R.drawable.quiz,
-                "https://appslabs.store/games/click-combo-quiz"
-            ),
-            GameModel("Color Match", R.drawable.ic_coin, "https://gamemmm.netlify.app/colormatch"),
-            GameModel(
-                "Circle Shooter",
-                R.drawable.digitarmedia_logo,
-                "https://gamemmm.netlify.app/circleshooter"
-            ),
-            GameModel("Bubble Shooter", R.drawable.hart_bg, "https://gamemmm.netlify.app/"),
-            GameModel(
-                "Endless Runner Dash",
-                R.drawable.header_glow_gradient,
-                "https://gamemmm.netlify.app/endlessrunnerdash"
-            ),
-            GameModel("Snake", R.drawable.wallet_bgr, "http://gamemmm.netlify.app/snakereloaded"),
-        )
-
-        categorizedData = listOf(
-            CategoryModel("Quick Play", allGamesList.shuffled()),
-            CategoryModel("Puzzle & Brain Games", allGamesList.shuffled()),
-            CategoryModel("Action Games", allGamesList.shuffled()),
-            CategoryModel("Adventure Games", allGamesList.shuffled()),
-        )
+        val gameRepository = GameRepository()
+        allGamesList = gameRepository.getAllGames()
+        categorizedData = gameRepository.getCategorizedGames()
 
         updateMainList(categorizedData)
     }
@@ -581,10 +544,20 @@ class MainActivity : AppCompatActivity() {
         val favGames = FavoritesManager.getFavorites(this)
         if (favGames.isEmpty()) {
             Toast.makeText(this, "No favorites added yet!", Toast.LENGTH_SHORT).show()
-            updateMainList(listOf(CategoryModel("My Favorites ❤️", emptyList())))
+            updateMainList(listOf(
+                CategoryModel(
+                    "My Favorites ❤️",
+                    emptyList()
+                )
+            ))
             return
         }
-        updateMainList(listOf(CategoryModel("My Favorites ❤️", favGames)))
+        updateMainList(listOf(
+            CategoryModel(
+                "My Favorites ❤️",
+                favGames
+            )
+        ))
     }
 
     private fun openGame(gameUrl: String) {

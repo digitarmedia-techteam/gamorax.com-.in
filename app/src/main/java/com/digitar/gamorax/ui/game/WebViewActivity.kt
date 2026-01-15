@@ -1,4 +1,6 @@
-package com.digitar.gamorax
+package com.digitar.gamorax.ui.game
+
+import com.digitar.gamorax.R
 
 import android.annotation.SuppressLint
 import android.os.Bundle

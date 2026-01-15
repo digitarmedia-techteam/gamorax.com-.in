@@ -1,4 +1,4 @@
-package com.digitar.gamorax
+package com.digitar.gamorax.ui.settings
 
 import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate

@@ -6,8 +6,8 @@ import android.os.Bundle
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
-import com.digitar.gamorax.ads.AdManager
-import com.digitar.gamorax.ads.AppOpenAdManager
+import com.digitar.gamorax.core.ads.AdManager
+import com.digitar.gamorax.core.ads.AppOpenAdManager
 
 class GameApplication : Application(), Application.ActivityLifecycleCallbacks {
 

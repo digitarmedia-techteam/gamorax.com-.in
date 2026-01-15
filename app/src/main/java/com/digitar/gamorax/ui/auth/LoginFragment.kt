@@ -1,4 +1,4 @@
-package com.digitar.gamorax.authorization
+package com.digitar.gamorax.ui.auth
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -8,7 +8,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.digitar.gamorax.MainActivity
+import com.digitar.gamorax.ui.main.MainActivity
 import com.digitar.gamorax.databinding.FragmentLoginBinding
 import kotlin.math.max
 import kotlin.math.min

@@ -1,4 +1,4 @@
-package com.digitar.gamorax.ads
+package com.digitar.gamorax.core.ads
 
 import android.app.Activity
 import android.content.Context

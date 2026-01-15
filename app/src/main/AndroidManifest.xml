@@ -19,7 +19,7 @@
         android:theme="@style/Theme.Gamorax"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.main.MainActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|screenLayout"
             android:exported="true"
             android:screenOrientation="sensor"
@@ -30,18 +30,18 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".authorization.LoginActivity"
+            android:name=".ui.auth.LoginActivity"
             android:exported="false"
             android:theme="@style/Theme.Gamorax" />
         <activity
-            android:name=".notification"
+            android:name=".ui.notification.NotificationActivity"
             android:exported="false" />
         <activity
-            android:name=".SettingsActivity"
+            android:name=".ui.settings.SettingsActivity"
             android:exported="false"
             android:theme="@style/Theme.Gamorax" />
         <activity
-            android:name=".PremiumCarouselActivity"
+            android:name=".ui.carousel.PremiumCarouselActivity"
             android:exported="false"
             android:theme="@style/Theme.Gamorax" />
 
@@ -50,7 +50,7 @@
             android:value="ca-app-pub-3940256099942544~3347511713" />
 
         <activity
-            android:name=".WebViewActivity"
+            android:name=".ui.game.WebViewActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|screenLayout"
             android:screenOrientation="sensor"
             android:theme="@style/FullscreenTheme" /> <!-- AdMob AdView for banner ads -->

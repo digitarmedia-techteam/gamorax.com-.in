@@ -1,4 +1,4 @@
-package com.digitar.gamorax
+package com.digitar.gamorax.ui.carousel
 
 import android.view.View
 import androidx.viewpager2.widget.ViewPager2

@@ -1,4 +1,6 @@
-package com.digitar.gamorax
+package com.digitar.gamorax.ui.settings
+
+import com.digitar.gamorax.R
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,6 +11,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import com.digitar.gamorax.ui.main.MainActivity
 import com.google.android.material.navigation.NavigationView
 
 class SettingsActivity : AppCompatActivity() {

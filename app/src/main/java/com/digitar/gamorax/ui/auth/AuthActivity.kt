@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.digitar.gamorax.R
 import com.digitar.gamorax.databinding.ActivityAuthBinding
+import com.digitar.gamorax.ui.auth.LoginFragment
 
 class AuthActivity : AppCompatActivity() {
 

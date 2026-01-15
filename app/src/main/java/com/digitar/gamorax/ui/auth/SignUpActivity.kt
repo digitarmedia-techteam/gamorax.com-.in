@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.digitar.gamorax.R
+import com.digitar.gamorax.ui.main.MainActivity
 import kotlin.math.max
 import kotlin.math.min
 
@@ -110,7 +111,7 @@ class SignUpActivity : AppCompatActivity() {
     private fun handleSignUpSuccess() {
         findViewById<View>(R.id.slideThumb).performHapticFeedback(android.view.HapticFeedbackConstants.CONFIRM)
         // Navigate to MainActivity or Home
-        val intent = Intent(this, com.digitar.gamorax.MainActivity::class.java)
+        val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
         finish()
     }
@@ -134,7 +135,7 @@ class SignUpActivity : AppCompatActivity() {
 
     private fun setupSkipButton() {
         findViewById<View>(R.id.skipAuth)?.setOnClickListener {
-            startActivity(Intent(this, com.digitar.gamorax.MainActivity::class.java).apply {
+            startActivity(Intent(this, MainActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
             })
             finish()

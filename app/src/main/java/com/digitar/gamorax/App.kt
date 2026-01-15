@@ -1,7 +1,7 @@
 package com.digitar.gamorax
 
 import android.app.Application
-import com.digitar.gamorax.ads.AdManager
+import com.digitar.gamorax.core.ads.AdManager
 
 class App : Application() {
 

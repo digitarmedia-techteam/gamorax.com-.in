@@ -1,4 +1,7 @@
-package com.digitar.gamorax
+package com.digitar.gamorax.ui.main
+
+import com.digitar.gamorax.R
+import com.digitar.gamorax.data.model.CategoryModel
 
 import android.view.LayoutInflater
 import android.view.View

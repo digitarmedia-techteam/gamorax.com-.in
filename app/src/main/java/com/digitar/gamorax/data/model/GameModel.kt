@@ -1,4 +1,4 @@
-package com.digitar.gamorax
+package com.digitar.gamorax.data.model
 
 import com.google.gson.annotations.SerializedName
 

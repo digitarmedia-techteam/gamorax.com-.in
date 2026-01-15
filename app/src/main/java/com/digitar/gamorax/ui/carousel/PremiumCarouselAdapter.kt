@@ -1,4 +1,6 @@
-package com.digitar.gamorax
+package com.digitar.gamorax.ui.carousel
+
+import com.digitar.gamorax.R
 
 import android.view.LayoutInflater
 import android.view.View

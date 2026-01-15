@@ -11,6 +11,7 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.DialogFragment
 import com.digitar.gamorax.R
+import com.digitar.gamorax.ui.auth.LoginActivity
 
 class LoginPopupDialog : DialogFragment() {
 
@@ -40,7 +41,8 @@ class LoginPopupDialog : DialogFragment() {
             dismiss()
         }
 
-        view.findViewById<TextView>(R.id.txtEmailLogin).setOnClickListener {            val intent = Intent(requireContext(), LoginActivity::class.java)
+        view.findViewById<TextView>(R.id.txtEmailLogin).setOnClickListener {
+            val intent = Intent(requireContext(), LoginActivity::class.java)
             val options = ActivityOptionsCompat.makeCustomAnimation(
                 requireContext(),
                 R.animator.card_flip_up_in,
@@ -49,10 +51,10 @@ class LoginPopupDialog : DialogFragment() {
             startActivity(intent, options.toBundle())
             dismiss()
         }
-        
+
 
         // Add other click listeners for Google/Apple if needed
     }
-    
+
     // onStart() is no longer needed as styling is handled by the theme
 }

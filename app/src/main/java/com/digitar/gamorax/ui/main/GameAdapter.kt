@@ -1,4 +1,8 @@
-package com.digitar.gamorax
+package com.digitar.gamorax.ui.main
+
+import com.digitar.gamorax.R
+import com.digitar.gamorax.data.model.GameModel
+import com.digitar.gamorax.data.FavoritesManager
 
 import android.animation.ObjectAnimator
 import android.view.LayoutInflater

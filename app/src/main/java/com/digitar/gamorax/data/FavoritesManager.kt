@@ -1,7 +1,8 @@
-package com.digitar.gamorax
+package com.digitar.gamorax.data
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.digitar.gamorax.data.model.GameModel
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 

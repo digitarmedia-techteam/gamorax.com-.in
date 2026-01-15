@@ -1,4 +1,6 @@
-package com.digitar.gamorax
+package com.digitar.gamorax.ui.carousel
+
+import com.digitar.gamorax.R
 
 import android.content.Context
 import android.os.Handler
