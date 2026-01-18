@@ -54,7 +54,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Gamorax!"
-                    android:textColor="@color/accent_orange"
+                    android:textColor="@color/premium_neon_green"
                     android:textSize="16sp"
                     android:textStyle="bold" />
             </LinearLayout>

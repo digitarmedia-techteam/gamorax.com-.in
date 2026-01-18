@@ -74,9 +74,11 @@ class MainActivity : AppCompatActivity() {
     private var categorizedData = listOf<CategoryModel>()
     private lateinit var adViewContainer: FrameLayout
     private lateinit var premiumCarouselManager: PremiumCarouselManager
+    private lateinit var authManager: com.digitar.gamorax.data.auth.AuthManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        authManager = com.digitar.gamorax.data.auth.AuthManager(this)
         AdManager.initialize(this)
         MobileAds.initialize(this) { }
         loadInterstitialAd()
@@ -143,10 +145,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkAndShowLoginPopup() {
-        val guestAuthManager = com.digitar.gamorax.data.auth.GuestAuthManager(this)
-        
         // Only show login popup if no user is logged in
-        if (!guestAuthManager.isUserLoggedIn()) {
+        if (authManager.getCurrentUserId() == null) {
             showLoginPopup()
         }
     }
@@ -413,14 +413,58 @@ class MainActivity : AppCompatActivity() {
         drawerLayout = findViewById(R.id.drawerLayout)
         val navigationView = findViewById<NavigationView>(R.id.navigationView)
         val menuButton = findViewById<ImageView>(R.id.menuButton)
-        Glide.with(this).load(R.drawable.user_gif).into(menuButton)
+        
+        // Load User Data
+        val userId = authManager.getCurrentUserId()
+        if (userId != null) {
+            authManager.getUserData(userId, 
+                onSuccess = { user ->
+                    // Update Menu Button
+                    if (user.profileImage.isNotEmpty() && user.profileImage.startsWith("http")) {
+                        Glide.with(this).load(user.profileImage).circleCrop().into(menuButton)
+                    } else {
+                        Glide.with(this).load(R.drawable.user_gif).circleCrop().into(menuButton)
+                    }
+                    
+                    // Update Header
+                    val headerView = navigationView.getHeaderView(0)
+                    headerView.findViewById<TextView>(R.id.navHeaderName)?.text = user.username
+                    headerView.findViewById<TextView>(R.id.navHeaderEmail)?.text = 
+                        if (user.email.isNotEmpty()) user.email else "Guest Player"
+                    
+                    val navAvatar = headerView.findViewById<ImageView>(R.id.navHeaderAvatar)
+                    if (navAvatar != null) {
+                        if (user.profileImage.isNotEmpty() && user.profileImage.startsWith("http")) {
+                             Glide.with(this).load(user.profileImage).circleCrop().into(navAvatar)
+                        } else {
+                             Glide.with(this).load(R.drawable.user_gif).circleCrop().into(navAvatar)
+                        }
+                    }
+                },
+                onFailure = {
+                    Glide.with(this).load(R.drawable.user_gif).into(menuButton)
+                }
+            )
+        } else {
+            Glide.with(this).load(R.drawable.user_gif).into(menuButton)
+        }
+
         menuButton.setOnClickListener {
             drawerLayout.openDrawer(GravityCompat.START)
         }
 
         navigationView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.nav_profile -> startActivity(Intent(this, profile::class.java))
+                R.id.nav_profile -> {
+                    if (authManager.getCurrentUserId() != null) {
+                        startActivity(Intent(this, profile::class.java))
+                    } else {
+                        // User not logged in, show login popup
+                        drawerLayout.closeDrawer(GravityCompat.START)
+                        showLoginPopup()
+                        return@setNavigationItemSelectedListener true
+                    }
+                }
                 R.id.nav_settings -> startActivity(Intent(this, SettingsActivity::class.java))
                 R.id.more_about_us -> startActivity(
                     Intent(
@@ -443,11 +487,14 @@ class MainActivity : AppCompatActivity() {
             .setMessage("Are you sure you want to logout?")
             .setPositiveButton("Yes") { _, _ ->
                 // Perform logout
-                val guestAuthManager = com.digitar.gamorax.data.auth.GuestAuthManager(this)
-                guestAuthManager.signOut()
+                authManager.signOut()
                 
                 // Show success message
                 Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show()
+                
+                // Reset UI
+                val menuButton = findViewById<ImageView>(R.id.menuButton)
+                Glide.with(this).load(R.drawable.user_gif).into(menuButton)
                 
                 // Show login popup again
                 showLoginPopup()

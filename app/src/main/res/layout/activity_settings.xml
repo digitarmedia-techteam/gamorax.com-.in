@@ -105,6 +105,114 @@
 
                 </com.google.android.material.card.MaterialCardView>
 
+                <!-- ACCOUNT SETTINGS SECTION -->
+                <TextView
+                    android:id="@+id/tvAccountHeader"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="Account"
+                    android:textColor="@color/accent_orange"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:visibility="gone"
+                    tools:visibility="visible"/>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardAccountSettings"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    app:cardBackgroundColor="@color/bg_card"
+                    app:cardCornerRadius="16dp"
+                    app:strokeColor="@color/glass_stroke"
+                    app:strokeWidth="1dp"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/btnSetPassword"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:background="?attr/selectableItemBackground"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:gravity="center_vertical"
+                            android:padding="16dp"
+                            android:text="Set Password"
+                            android:textColor="@color/text_primary"
+                            android:textSize="16sp"
+                            android:visibility="gone" />
+
+                        <View
+                            android:id="@+id/dividerSetPass"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/glass_stroke"
+                            android:visibility="gone"/>
+
+                        <TextView
+                            android:id="@+id/btnChangePassword"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:background="?attr/selectableItemBackground"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:gravity="center_vertical"
+                            android:padding="16dp"
+                            android:text="Change Password"
+                            android:textColor="@color/text_primary"
+                            android:textSize="16sp"
+                            android:visibility="gone" />
+
+                         <View
+                            android:id="@+id/dividerChangePass"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/glass_stroke"
+                            android:visibility="gone"/>
+
+                        <TextView
+                            android:id="@+id/btnDeleteAccount"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="?attr/selectableItemBackground"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:padding="16dp"
+                            android:text="Delete Account"
+                            android:textColor="#FF4444"
+                            android:textSize="16sp" />
+                            
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/glass_stroke" />
+
+                        <TextView
+                            android:id="@+id/btnLogout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="?attr/selectableItemBackground"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:padding="16dp"
+                            android:text="Logout"
+                            android:textColor="@color/text_primary"
+                            android:textSize="16sp" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
                 <TextView
                     android:id="@+id/versionText"
                     android:layout_width="wrap_content"

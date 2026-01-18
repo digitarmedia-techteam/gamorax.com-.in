@@ -49,24 +49,28 @@
             android:id="@+id/btnLogout"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:src="@drawable/exit"
-            android:padding="12dp"
-            app:layout_constraintEnd_toStartOf="@id/btnClose"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
-
-        <ImageButton
-            android:id="@+id/btnClose"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:padding="8dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/logout"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_close"
-            android:contentDescription="Close"
-            android:padding="12dp"
-            app:tint="#CCFFFFFF"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:tint="@color/accent_gold" />
+
+
+        <!--        <ImageButton-->
+<!--            android:id="@+id/btnClose"-->
+<!--            android:layout_width="48dp"-->
+<!--            android:layout_height="48dp"-->
+<!--            android:background="?attr/selectableItemBackgroundBorderless"-->
+<!--            android:src="@drawable/ic_close"-->
+<!--            android:contentDescription="Close"-->
+<!--            android:padding="12dp"-->
+<!--            app:tint="#CCFFFFFF"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"/>-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -123,7 +127,7 @@
                         android:layout_width="104dp"
                         android:layout_height="104dp"
                         android:padding="4dp"
-                        android:src="@drawable/profile_avatar_v2"
+                        android:src="@drawable/user_gif"
                         app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
                         app:strokeColor="@color/premium_neon_green"
                         app:strokeWidth="2dp"
@@ -169,13 +173,27 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"/>
 
+                    <TextView
+                        android:id="@+id/tvEmail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="user@example.com"
+                        android:textColor="#99FFFFFF"
+                        android:textSize="12sp"
+                        android:layout_marginTop="4dp"
+                        android:visibility="gone"
+                        tools:visibility="visible"
+                        app:layout_constraintTop_toBottomOf="@id/tvUserTitle"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"/>
+
                     <!-- Level Row -->
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/levelRow"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
-                        app:layout_constraintTop_toBottomOf="@id/tvUserTitle">
+                        app:layout_constraintTop_toBottomOf="@id/tvEmail">
                         
                         <TextView
                             android:id="@+id/tvLevelLabel"

@@ -5,6 +5,7 @@ data class User(
     val username: String = "",
     val bio: String = "",
     val profileImage: String = "",
+    val email: String = "",
     val isGuest: Boolean = false,
     val createdAt: Long = System.currentTimeMillis()
 )

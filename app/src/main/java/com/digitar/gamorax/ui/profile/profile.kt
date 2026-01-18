@@ -3,20 +3,23 @@ package com.digitar.gamorax.ui.profile
 import android.os.Bundle
 import android.view.View
 import android.view.animation.AnimationUtils
+import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.ImageView // Added
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.widget.NestedScrollView
+import com.bumptech.glide.Glide // Added
 import com.digitar.gamorax.R
 import android.graphics.Rect
-import android.widget.EditText
-import com.digitar.gamorax.data.auth.GuestAuthManager
+import android.widget.LinearLayout
+import com.digitar.gamorax.data.auth.AuthManager // Changed
 import com.digitar.gamorax.data.model.User
 
 class profile : AppCompatActivity() {
@@ -27,19 +30,21 @@ class profile : AppCompatActivity() {
     private lateinit var achievementLayout: View
     private lateinit var nestedScrollView: NestedScrollView
     private lateinit var avatarGlow: View
-    private lateinit var pbLevel: android.widget.ProgressBar
-    private lateinit var layoutStats: android.widget.LinearLayout
+    private lateinit var ivProfileAvatar: ImageView // Added
+    private lateinit var pbLevel: ProgressBar
+    private lateinit var layoutStats: LinearLayout
     private var hasAnimatedAchievements = false
     
     // User data
-    private lateinit var guestAuthManager: GuestAuthManager
+    private lateinit var authManager: AuthManager // Changed
     private lateinit var tvUsername: TextView
     private lateinit var tvUserTitle: TextView
+    private lateinit var tvEmail: TextView // Added
     private var currentUser: User? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        // enableEdgeToEdge() - Commented out as it might cause issues if not setup correctly in themes
         setContentView(R.layout.activity_profile)
         
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -49,7 +54,7 @@ class profile : AppCompatActivity() {
             insets
         }
 
-        guestAuthManager = GuestAuthManager(this)
+        authManager = AuthManager(this)
         initViews()
         setupListeners()
         loadUserData()
@@ -58,20 +63,22 @@ class profile : AppCompatActivity() {
 
     private fun initViews() {
         btnBack = findViewById(R.id.btnBack)
-        btnClose = findViewById(R.id.btnClose)
+//        btnClose = findViewById(R.id.btnClose)
         cardProfileHeader = findViewById(R.id.cardProfileHeader)
         achievementLayout = findViewById(R.id.achievementLayout)
         nestedScrollView = findViewById(R.id.nestedScrollView)
         avatarGlow = findViewById(R.id.avatarGlow)
+        ivProfileAvatar = findViewById(R.id.ivProfileAvatar) // Added join
         pbLevel = findViewById(R.id.pbLevel)
         layoutStats = findViewById(R.id.layoutStats)
         tvUsername = findViewById(R.id.tvUsername)
         tvUserTitle = findViewById(R.id.tvUserTitle)
+        tvEmail = findViewById(R.id.tvEmail) // Added join
     }
 
     private fun setupListeners() {
         btnBack.setOnClickListener { finish() }
-        btnClose.setOnClickListener { finish() }
+//        btnClose.setOnClickListener { finish() }
         
         // Logout button
         findViewById<ImageButton>(R.id.btnLogout).setOnClickListener {
@@ -93,7 +100,7 @@ class profile : AppCompatActivity() {
             .setTitle("Logout")
             .setMessage("Are you sure you want to logout? You can login again anytime.")
             .setPositiveButton("Yes, Logout") { _, _ ->
-                guestAuthManager.signOut()
+                authManager.signOut()
                 Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show()
                 finish() // Close profile and return to main
             }
@@ -102,10 +109,10 @@ class profile : AppCompatActivity() {
     }
     
     private fun loadUserData() {
-        val userId = guestAuthManager.getCurrentUserId()
+        val userId = authManager.getCurrentUserId()
         
         if (userId != null) {
-            guestAuthManager.getUserData(
+            authManager.getUserData(
                 userId = userId,
                 onSuccess = { user ->
                     currentUser = user
@@ -123,12 +130,36 @@ class profile : AppCompatActivity() {
             // No user logged in
             tvUsername.text = "Guest User"
             tvUserTitle.text = "Not logged in"
+            tvEmail.visibility = View.GONE
         }
     }
     
     private fun updateUI(user: User) {
         tvUsername.text = user.username
         tvUserTitle.text = if (user.bio.isNotEmpty()) user.bio else "Elite Warrior"
+        
+        // Email
+        if (user.email.isNotEmpty()) {
+            tvEmail.text = user.email
+            tvEmail.visibility = View.VISIBLE
+        } else {
+            tvEmail.visibility = View.GONE
+        }
+
+        // Profile Image
+        if (user.profileImage.isNotEmpty()) {
+            if (user.profileImage.startsWith("http")) {
+                Glide.with(this)
+                    .load(user.profileImage)
+                    .circleCrop()
+                    .placeholder(R.drawable.profile_avatar_v2)
+                    .error(R.drawable.profile_avatar_v2)
+                    .into(ivProfileAvatar)
+            } else {
+                // Handle local drawable logic if needed, or just keep default
+                // existing logic seemed to rely on default
+            }
+        }
     }
     
     private fun showEditProfileDialog() {
@@ -166,9 +197,9 @@ class profile : AppCompatActivity() {
     }
     
     private fun saveProfileChanges(username: String, bio: String) {
-        val userId = guestAuthManager.getCurrentUserId() ?: return
+        val userId = authManager.getCurrentUserId() ?: return
         
-        guestAuthManager.updateUserProfile(
+        authManager.updateUserProfile(
             userId = userId,
             username = username,
             bio = bio,
@@ -219,8 +250,8 @@ class profile : AppCompatActivity() {
         val scrollBounds = Rect()
         nestedScrollView.getHitRect(scrollBounds)
 
-        if (achievementLayout is android.widget.LinearLayout) {
-            val layout = achievementLayout as android.widget.LinearLayout
+        if (achievementLayout is LinearLayout) {
+            val layout = achievementLayout as LinearLayout
             for (i in 0 until layout.childCount) {
                 val child = layout.getChildAt(i)
                 if (child.tag != "animated" && child.getLocalVisibleRect(scrollBounds)) {

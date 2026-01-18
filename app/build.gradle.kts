@@ -58,6 +58,9 @@ dependencies {
     // Google Mobile Ads
     implementation("com.google.android.gms:play-services-ads:24.9.0")
 
+    // Google Play Services Auth
+    implementation("com.google.android.gms:play-services-auth:21.3.0")
+
     // Firebase (Bill of Materials)
     implementation(platform("com.google.firebase:firebase-bom:34.7.0"))
 
